@@ -12,5 +12,5 @@ Right now there are several examples:
 2. backbone integration
 
 Try to integrate with
-[ ] React
-[ ] Angular
+- [ ] React
+- [ ] Angular
