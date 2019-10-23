@@ -1,0 +1,36 @@
+<script id="custom-template" type="template/text">
+<span class="sync-test" data-bind-text="get(name)"></span>
+</script>
+
+<div class="thumbnail">
+    <img class="media-object" src="{{avatar}}">
+</div>
+<div class="media-heading">
+    <div class="testing-template" data-bind-template="$(#custom-template)"></div>
+    <input
+        type="text"
+        class="user-name"
+        value=""
+        data-bind-val="get(name)"
+    />
+    <small>
+        <a href="#employees/edit/{{id}}">
+            <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+        <a href="#employees/delete/{{id}}" class="delete-employee">
+            <span class="glyphicon glyphicon-trash"></span>
+        </a>
+        <i class="render-html">
+            <span class="glyphicon glyphicon-refresh"></span>
+        </i>
+    </small>
+</div>
+<div class="media-body">
+    <dl>
+        <dt>Phone Number:</dt>
+        <dd><input class="user-phone form-control" value="" data-bind-val="get(tel)" /></dd>
+        <dt>Email:</dt>
+        <dd><input class="user-email form-control" value="" data-bind-val="get(email)" /></dd>
+    </dl>
+</div>
+<hr/>

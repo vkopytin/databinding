@@ -1,0 +1,29 @@
+<h2 class="page-header text-center">{{#isNew}}Create{{/isNew}}{{^isNew}}Edit{{/isNew}} Employee </h2>
+<form role="form" class="form-horizontal employee-form">
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Full name:</label>
+        <div class="col-sm-6">
+        <input type="text" class="form-control employee-name-input" value="{{name}}" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Email address:</label>
+        <div class="col-sm-6">
+        <input type="email" class="form-control employee-email-input" value="{{email}}" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Telephone number:</label>
+        <div class="col-sm-6">
+        <input type="tel" class="form-control employee-tel-input" value="{{tel}}" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-3">
+        <button type="submit" class="btn btn-outline btn-lg btn-block">Submit</button>
+        </div>
+        <div class="col-sm-3">
+        <a href="#employees" class="btn btn-outline btn-lg btn-block">Cancel</a>
+        </div>
+    </div>
+</form>

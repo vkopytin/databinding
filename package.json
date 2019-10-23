@@ -1,0 +1,71 @@
+{
+  "name": "data-binding",
+  "version": "1.0.0",
+  "description": "Advanced data binding",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "jest",
+    "watch": "webpack --progress --color --display-error-details --mode=development --watch --config webpack.config"
+  },
+  "keywords": [
+    "data",
+    "binding"
+  ],
+  "author": "Volodymyr Kopytin",
+  "license": "ISC",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.mustache$": "mustache-jest"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "mustache",
+      "json"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/entry-editor"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "<rootDir>/tsconfig.json"
+      }
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$"
+  },
+  "devDependencies": {
+    "@types/backbone": "^1.4.1",
+    "@types/jest": "^24.0.18",
+    "@types/jquery": "^3.3.31",
+    "@types/node": "^12.7.2",
+    "@types/underscore": "^1.9.2",
+    "@types/webpack": "^4.39.1",
+    "css-loader": "^3.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^24.9.0",
+    "mustache-jest": "^1.1.1",
+    "mustache-loader": "^1.4.3",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-nested": "^4.1.2",
+    "resolve-url-loader": "^3.1.0",
+    "style-loader": "^1.0.0",
+    "ts-jest": "^24.0.2",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.3",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "dependencies": {
+    "backbone": "^1.4.0",
+    "jquery": "^3.4.1",
+    "redux": "^4.0.4",
+    "rxjs": "^6.5.3",
+    "underscore": "^1.9.1"
+  }
+}
