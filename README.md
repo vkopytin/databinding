@@ -8,5 +8,9 @@ To start solution run ```yarn watch```
 The goal is to build fully working databinding solution that is compatible to use for javascript and another frameworks (if possible)
 
 Right now there are several examples:
-1. javascript + jquery solution
-2. backbone solution
+1. javascript + jquery integration
+2. backbone integration
+
+Try to integrate with
+[ ] React
+[ ] Angular
