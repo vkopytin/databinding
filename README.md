@@ -1,6 +1,56 @@
 # databinding
 DataBinding in javascript
 
+How it is expected to integrate
+```javascript
+import { bindTo, unbindFrom, updateLaoyout } from 'databinding';
+
+interface View extends ReturnType<typeof initialize$View> { }
+
+function initialize$View<T>(inst: T, $el) {
+    return Object.assign(inst, {
+        $newTodo: $('.new-todo', $el),
+        $total: $('.total', $el),
+        itemsListView: new TodoListView({
+            $el: $('.todo-list', $el)
+        }),
+        $toggleAll: $('.toggle-all', $el),
+        $todoCount: $('.todo-count strong', $el),
+        $todoCompleted: $('.clear-completed', $el),
+        $itemWord: $('.item-word', $el),
+        $itemsWord: $('.items-word', $el)
+    });
+}
+
+class View {
+    $el = ...
+    ...
+    binding = bindTo(this, () => new ViewModel(), {
+        '$total.text': 'items.length',
+        '-$toggleAll.prop(checked)': 'remaining.length|not',
+        '-$todoCount.text': 'remaining.length',
+        '-$itemWord.toggleClass(hidden)': 'remaining.1|bool',
+        '-$itemsWord.toggleClass(hidden)': 'remaining.1|not',
+        '$newTodo.val': 'newTodoTitle',
+        'itemsListView.items': 'items',
+        'itemsListView.filter': 'filterItems',
+        '-$newTodo.keypress': '.bind(onKeypress)',
+    });
+    ...
+    render() {
+        this.$el.html(<...>);
+        initialize$View(this, this.$el);
+
+        updateLaoyout(this.binding);
+    }
+    ...
+    remove() {
+        unbindFrom(this.binding);
+        this.$el.remove();
+    }
+}
+```
+
 This is pure JS solution to implement databinding for javascript application.
 
 To start solution run `yarn watch`
