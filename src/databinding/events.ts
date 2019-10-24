@@ -39,7 +39,7 @@ class Events {
 
             while (i--) {
                 try {
-                    subscribers[i].apply(this, args);
+                    subscribers[i].apply(this, [event, ...args]);
                 } catch (e) {
                     setTimeout(() => { throw e; });
                 }

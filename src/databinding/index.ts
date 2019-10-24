@@ -90,6 +90,20 @@ const typeDescriptors: Array<{
             obj.off('all', callback);
         }
     }, {
+        name: /^(\w+\(.*\))$/i,
+        getter(obj: BB.View, name: string) {
+            const [a, fnName, fnValue] = /^(\w+)\((.*)\)$/.exec(name);
+
+            return obj[fnName](fnValue);
+        },
+        setter(obj: BB.View, name: string, value) {
+            const [a, fnName, fnValue] = /^(\w+)\((.*)\)$/.exec(name);
+            obj[fnName](fnValue);
+        },
+        handler: {},
+        attach(obj: { on; off;}, propName: string, handler) { },
+        detach(obj: { on; off; }, propName: string, callback) { }
+    }, {
         name: /^(checked)$/,
         getter(obj: JQuery, propName: string) {
             return obj.is(':checked');
@@ -155,7 +169,7 @@ const typeDescriptors: Array<{
         setter(obj: JQuery, propName: string, value) {
             this.handler.addHandler(obj[0], value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
         attach(obj: JQuery, propName: string) {
             obj.on('keypress', this.handler.invoke);
         },
@@ -171,7 +185,7 @@ const typeDescriptors: Array<{
         setter(obj: JQuery, propName: string, value) {
             this.handler.addHandler(obj[0], value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
         attach(obj: JQuery, propName: string) {
             obj.on('click', this.handler.invoke);
         },
@@ -187,7 +201,7 @@ const typeDescriptors: Array<{
         setter(obj: JQuery, propName: string, value) {
             this.handler.addHandler(obj[0], value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
         attach(obj: JQuery, propName: string) {
             obj.on('dblclick', this.handler.invoke);
         },
@@ -203,7 +217,7 @@ const typeDescriptors: Array<{
         setter(obj: JQuery, propName: string, value) {
             this.handler.addHandler(obj[0], value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
         attach(obj: JQuery, propName: string) {
             obj.on('blur', this.handler.invoke);
         },
@@ -219,7 +233,7 @@ const typeDescriptors: Array<{
         setter(obj: JQuery, propName: string, value) {
             this.handler.addHandler(obj[0], value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
         attach(obj: JQuery, propName: string) {
             obj.on('keydown', this.handler.invoke);
         },
@@ -464,21 +478,46 @@ const typeDescriptors: Array<{
          }
     }, {
         name: /^event\((.+)\)$/,
-        getter(obj) {
-            return this.handler.getHandler(obj);
+        getter(obj, eventName) {
+            return this.handler.getHandler(obj, eventName);
         },
-        setter(obj, propName: string, value) {
-            this.handler.addHandler(obj, value);
+        setter(obj, eventName: string, value) {
+            this.handler.addHandler(obj, eventName, value);
         },
-        handler: new MulticastDelegate(function () { return [this, this]; }),
+        handler: new MulticastDelegate(function (a) { return [this, a]; }),
         attach(obj, propName: string) {
             const [a, eventName] = this.name.exec(propName);
             obj.on(eventName, this.handler.invoke);
         },
         detach(obj, propName: string) {
             const [a, eventName] = this.name.exec(propName);
-            this.handler.removeHandler(obj);
-            obj.off(propName, this.handler.invoke);
+            this.handler.removeHandler(obj, eventName);
+            obj.off(eventName, this.handler.invoke);
+        }
+    }, {
+        name: /^(\w+\(.*\))$/i,
+        getter(obj: BB.View, name: string) {
+            const [a, fnName, fnValue] = /^(\w+)\((.*)\)$/.exec(name);
+
+            return obj[fnName](fnValue);
+        },
+        setter(obj: BB.View, name: string, value) {
+            const [a, fnName, fnValue] = /^(\w+)\((.*)\)$/.exec(name);
+            obj[fnName](fnValue);
+        },
+        handler: {},
+        attach(obj: { on; off;}, propName: string, handler) {
+            if ('on' in obj && 'off' in obj) {
+                const callback = () => handler(obj, propName);
+                obj.on('change:' + propName, callback);
+
+                return callback;
+            }
+        },
+        detach(obj: { on; off; }, propName: string, callback) {
+            if ('on' in obj && 'off' in obj) {
+                obj.off('change:' + propName, callback);
+            }
         }
     }, {
         name: /^(\w+\(.*\))$/i,
