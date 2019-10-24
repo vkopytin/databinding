@@ -88,6 +88,31 @@ class TodoService extends Events {
             }).run();
     }
 
+    filter(whereFn: (item, key) => boolean, fn: (err, res) => void) {
+        const items = [];
+        using(indexedDB.open(serviceId, 1), (err, res) => res)
+            .next((err, res) => {
+                return res.transaction(this.tableName, 'readonly');
+            })
+            .next((err, tr) => {
+                const store = tr.objectStore(this.tableName);
+                return store.openCursor();
+            })
+            .next((err, res) => {
+                if (res) {
+                    whereFn(res.value, res.key) && items.push({
+                        id: res.key,
+                        title: res.value.title,
+                        completed: res.value.completed
+                    });
+                    res.continue();
+                } else {
+                    fn(err, items);
+                }
+                return res;
+            }).run();
+    }
+
     create(options, fn: (err, res) => void) {
         using(indexedDB.open(serviceId, 1), (err, res) => res)
             .next((err, res) => {

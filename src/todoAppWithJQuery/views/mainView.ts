@@ -1,8 +1,9 @@
 import template = require('../templates/mainView.mustache');
-import { $ } from 'backbone';
+import * as $ from 'jquery';
 import { bindTo, unbindFrom, dispatch, updateLayout } from '../../databinding';
 import { MainViewModel } from '../viewModels/mainViewModel';
 import { TodoListView } from './todoListView';
+import { Events } from '../../databinding/events';
 
 
 const ENTER_KEY = 13;
@@ -28,10 +29,11 @@ function initialize$MainView<T>(inst: T, $el) {
     });
 }
 
-class MainView {
+class MainView extends Events {
     options = this.initOptions(this.config);
     $el = this.options.$el;
     createNewItem = null as { exec(); };
+    todoFilter = '/';
 
     binding = bindTo(this, () => new MainViewModel(), {
         '$total.text': 'items.length',
@@ -44,11 +46,14 @@ class MainView {
         '-$itemsWord.toggleClass(hidden)': 'remaining.1|not',
         '$newTodo.val': 'newTodoTitle',
         'itemsListView.items': 'items',
+        'itemsListView.filter': 'filterItems',
         '-$newTodo.keypress': '.bind(onKeypress)',
-        '-createNewItem': 'createNewItemCommand'
+        '-createNewItem': 'createNewItemCommand',
+        'activeFilter': 'filterBy'
     });
 
     constructor(public config = {}) {
+        super();
         this.initialize();
     }
 
@@ -67,6 +72,17 @@ class MainView {
             ...defOptions,
             ...options
         };
+    }
+
+    activeFilter(val?) {
+        if (arguments.length && val !== this.todoFilter) {
+            this.todoFilter = val;
+            this.$el.find('.filters li a').toggleClass('selected', false);
+            this.$el.find(`.filters li a[href='#/${val}']`).toggleClass('selected', true);
+            this.trigger('change:activeFilter');
+        }
+
+        return this.todoFilter;
     }
 
     onKeypress(evnt) {

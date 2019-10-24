@@ -14,7 +14,7 @@ class TodoItem extends Events {
         const defOptions = {
             title: '',
             completed: false
-        }
+        };
         return {
             ...defOptions,
             ...options as {

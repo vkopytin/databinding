@@ -8,6 +8,8 @@ import * as utils from '../../utils';
 class MainViewModel extends Events {
     todoTitle = '';
     iItems = [] as TodoItem[];
+    varFilterBy = '/';
+    varFilterItems = (i) => true;
     createNewItemCommand = {
         exec: () => this.createNewItem()
     };
@@ -17,16 +19,13 @@ class MainViewModel extends Events {
     fetchData() {
         const service = TodoService.inst();
         service.list((err, res: Array<{ id; }>) => {
-            this.iItems = utils.map(res, i => {
+            this.items(utils.map(res, i => {
                 const exists = utils.find(this.iItems, item => item.id() === i.id);
                 if (exists) {
                     return exists;
                 }
                 return new TodoItem(i);
-            });
-            this.trigger('change:items');
-            this.trigger('change:completed');
-            this.trigger('change:remaining');
+            }));
         });
     }
 
@@ -69,6 +68,32 @@ class MainViewModel extends Events {
         service.create(item.toJSON(), (err, res) => {
             this.fetchData();
         });
+    }
+
+    filterBy(val?) {
+        if (arguments.length && val !== this.varFilterBy) {
+            this.varFilterBy = val;
+            this.trigger('change:filterBy');
+            switch (val) {
+                case 'active':
+                    this.filterItems(i => !i.completed());
+                    break;
+                case 'completed':
+                    this.filterItems(i => i.completed());
+                    break;
+                default:
+                    this.filterItems(i => true);
+            }
+        }
+        return this.varFilterBy;
+    }
+
+    filterItems(val?: (i: TodoItem) => boolean) {
+        if (arguments.length && val !== this.varFilterItems) {
+            this.varFilterItems = val;
+            this.trigger('change:filterItems');
+        }
+        return this.varFilterItems;
     }
 }
 

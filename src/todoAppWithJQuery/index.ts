@@ -4,11 +4,25 @@ import './css/main.css';
 
 
 class App {
+    mainView: MainView = null;
     constructor() {
         setTimeout(() => this.initialize());
     }
     initialize() {
-        new MainView({ $el: $('body') });
+        this.ensureMainView();
+        $(window).on('hashchange', (evnt) => this.switchLocation(evnt));
+    }
+    switchLocation(evnt) {
+        this.ensureMainView();
+        this.mainView.activeFilter(window.location.hash.replace(/^#\//, ''));
+    }
+    ensureMainView() {
+        if (this.mainView === null) {
+            this.mainView = new MainView({
+                $el: $('body')
+            });
+        };
+        this.mainView.activeFilter(window.location.hash.replace(/^#\//, ''));
     }
 }
 

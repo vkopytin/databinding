@@ -115,6 +115,10 @@ class TodoListViewItem extends Events {
         this.$el.remove();
         unbindFrom(this.binding);
     }
+
+    hide(on) {
+        this.$el.toggleClass('hidden', !on);
+    }
 }
 
 export { TodoListViewItem };

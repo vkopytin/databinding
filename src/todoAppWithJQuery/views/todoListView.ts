@@ -9,8 +9,10 @@ class TodoListView extends Events {
     options = this.initOptions(this.config);
     $el = this.options.$el;
     children = [] as TodoListViewItem[];
+    filterFn = (i) => true;
     binding = bindTo(this, () => { }, {
-        '-event(change:items)': '.bind(updateChildren)'
+        '-event(change:items)': '.bind(updateChildren)',
+        '-event(change:filter)': '.bind(drawItems)'
     });
 
     constructor(public config = {}) {
@@ -33,6 +35,14 @@ class TodoListView extends Events {
             ...defOptions,
             ...options
         };
+    }
+
+    filter(fn?) {
+        if (arguments.length && fn !== this.filterFn) {
+            this.filterFn = fn;
+            this.trigger('change:filter');
+        }
+        return this.filterFn;
     }
 
     items(value?: any[]) {
@@ -77,6 +87,7 @@ class TodoListView extends Events {
             if (elIndex !== index) {
                 this.$el.append(itemView.$el);
             }
+            itemView.hide(this.filter()(itemView.options.item));
         });
     }
 }
