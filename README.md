@@ -13,13 +13,11 @@ Tasks that databind should perform (toDO):
 2. [ ] Convert values during transfer from one type to another. Ideally it should allow to specify custom type convertes as well;
 3. [ ] Validate data before transfer. Provide validation error report. Maybe rise validation error exeption.
 
-Right now there are several examples:
-1. javascript + jquery integration;
-2. backbone integration.
-
-Try to integrate with
-- [ ] React;
-- [ ] Angular.
+Examples of integration with:
+1. [x] javascript + jquery integration;
+2. [x] backbone integration;
+3. [ ] React (if possible and there is a reason);
+4. [ ] Angular (if possible and there is a reason).
 
 Here is the list of problems with automatic databinding.
 
