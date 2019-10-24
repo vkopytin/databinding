@@ -26,15 +26,15 @@ class View {
     $el = ...
     ...
     binding = bindTo(this, () => new ViewModel(), {
-        '$total.text': 'items.length',
-        '-$toggleAll.prop(checked)': 'remaining.length|not',
-        '-$todoCount.text': 'remaining.length',
+        '$total.text': 'items.length', // two way to porperty on ViewModel
+        '-$toggleAll.prop(checked)': 'remaining.length|not', // one way from source to target to porperty on ViewModel
+        '+$newTodo.val': 'newTodoTitle', // one way from target to source to porperty on ViewModel
+        '-$newTodo.keypress': '.bind(onKeypress)', // one way from source to target to property on View (.) comes first
+        '-$todoCount.text': 'remaining.length', 
         '-$itemWord.toggleClass(hidden)': 'remaining.1|bool',
         '-$itemsWord.toggleClass(hidden)': 'remaining.1|not',
-        '$newTodo.val': 'newTodoTitle',
         'itemsListView.items': 'items',
         'itemsListView.filter': 'filterItems',
-        '-$newTodo.keypress': '.bind(onKeypress)',
     });
     ...
     render() {
