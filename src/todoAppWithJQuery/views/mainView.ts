@@ -23,9 +23,9 @@ function initialize$MainView<T>(inst: T, $el) {
         $footer: $('.footer', $el),
         $toggleAll: $('.toggle-all', $el),
         $todoCount: $('.todo-count strong', $el),
-        $todoCompleted: $('.clear-completed', $el),
         $itemWord: $('.item-word', $el),
-        $itemsWord: $('.items-word', $el)
+        $itemsWord: $('.items-word', $el),
+        $clearCompleted: $('.clear-completed', $el)
     });
 }
 
@@ -34,6 +34,7 @@ class MainView extends Events {
     $el = this.options.$el;
     createNewItem = null as { exec(); };
     todoFilter = '/';
+    markAllCompleted = () => { };
 
     binding = bindTo(this, () => new MainViewModel(), {
         '$total.text': 'items.length',
@@ -49,7 +50,9 @@ class MainView extends Events {
         'itemsListView.filter': 'filterItems',
         '-$newTodo.keypress': '.bind(onKeypress)',
         '-createNewItem': 'createNewItemCommand',
-        'activeFilter': 'filterBy'
+        'activeFilter': 'filterBy',
+        '-$toggleAll.click': 'bind(markAllCompleted)',
+        '-$clearCompleted.click': 'bind(clearCompleted)'
     });
 
     constructor(public config = {}) {

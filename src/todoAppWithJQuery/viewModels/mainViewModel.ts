@@ -19,13 +19,14 @@ class MainViewModel extends Events {
     fetchData() {
         const service = TodoService.inst();
         service.list((err, res: Array<{ id; }>) => {
-            this.items(utils.map(res, i => {
+            this.items([...utils.map(res, i => {
                 const exists = utils.find(this.iItems, item => item.id() === i.id);
                 if (exists) {
+                    exists.fromData(i);
                     return exists;
                 }
                 return new TodoItem(i);
-            }));
+            })]);
         });
     }
 
@@ -94,6 +95,17 @@ class MainViewModel extends Events {
             this.trigger('change:filterItems');
         }
         return this.varFilterItems;
+    }
+
+    markAllCompleted() {
+        const val = !!this.remaining().length;
+        utils.forEach(this.iItems, i => i.update({ completed: val }));
+        this.fetchData();
+    }
+
+    clearCompleted() {
+        utils.forEach(this.completed(), i => i.destroy());
+        this.fetchData();
     }
 }
 

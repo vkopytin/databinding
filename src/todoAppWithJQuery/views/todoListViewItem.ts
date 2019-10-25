@@ -34,7 +34,8 @@ class TodoListViewItem extends Events {
         '-$label.dblclick': '.bind(edit)',
         '-$destroy.click': '.bind(clear)',
         '-$edit.keydown': '.bind(revertOnEscape)',
-        '-$edit.blur': '.bind(close)'
+        '-$edit.blur': '.bind(close)',
+        '+options.bind(update)': 'event(change:completed)'
     });
 
     constructor(public config = {}) {

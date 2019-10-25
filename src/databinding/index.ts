@@ -1139,6 +1139,7 @@ const updateLayout = (obj: { s; t; state: IStateRecord; dataBinding: IDataBindin
             id: opId
         });
         newState = utils.reduce(actionsSource, (newState, action) => dispatchTo(obj, newState, action), newState);
+        newState = dispatchTo(obj, newState, { item: obj, propName: 't' });
 
         if (newState !== obj.state) {
             obj.state = newState
