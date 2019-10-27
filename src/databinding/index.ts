@@ -4,10 +4,8 @@ import { asyncQueue } from '../utils';
 import * as utils from '../utils';
 import { ValueConvertor } from './valueConvertor';
 import { MulticastDelegate } from './multicastDelegate';
-import { stat } from 'fs';
+import { Events } from './events';
 
-
-type Constructor<T = {}> = new (...args: any[]) => T;
 
 interface IDataBinding {
     onPropertyChange(...args): void;
@@ -503,7 +501,7 @@ const typeDescriptors: Array<{
         },
         setter(obj: BB.View, name: string, value) {
             const [a, fnName, fnValue] = /^(\w+)\((.*)\)$/.exec(name);
-            obj[fnName](fnValue);
+            obj[fnName](fnValue, value);
         },
         handler: {},
         attach(obj: { on; off;}, propName: string, handler) {
@@ -716,6 +714,7 @@ const makeEventHandler = (rootItem) => (obj, propName: string) => {
         });
         if (newState !== rootItem.state) {
             rootItem.state = newState;
+            rootItem.events.trigger('change');
             mainState[rootItem.dataBinding.bindingId] = newState;
         }
         next();
@@ -1119,7 +1118,7 @@ const updateLayoutTo = (state: IStateRecord, obj) => {
     return state;
 }
 
-const updateLayout = (obj: { s; t; state: IStateRecord; dataBinding: IDataBinding}) => {
+const updateLayout = (obj: { s; t; state: IStateRecord; dataBinding: IDataBinding; events: Events; }) => {
     queue.push((next, opId) => {
         //const newState = updateLayoutTo(obj.state, obj);
         let newState = syncState(obj, obj.state, {
@@ -1143,7 +1142,7 @@ const updateLayout = (obj: { s; t; state: IStateRecord; dataBinding: IDataBindin
 
         if (newState !== obj.state) {
             obj.state = newState
-
+            obj.events.trigger('change');
             mainState[obj.dataBinding.bindingId] = newState;
         }
         next();
@@ -1176,6 +1175,7 @@ const dispatch = (obj, propChangeEventArgs: { propName: string }) => {
             if (newState !== oldState[key]) {
                 const rootItem = newState.t[1];
                 rootItem.state = newState;
+                rootItem.events.trigger('change');
 
                 return {
                     ...oldState,
@@ -1197,6 +1197,38 @@ const bindToState = (root, state: IStateRecord, bi: IBindingInfo) => {
     const newState = initPathWithState(root, nextState, bi.target.path, root);
 
     return newState;
+}
+
+const subscribeToChange = (rootItem: { events: Events; }, handler) => {
+    rootItem.events.on('change', handler);
+}
+
+const toStateObject = (state, rootItem: { s; t; state: IStateRecord, dataBinding: IDataBinding }) => {
+    return utils.reduce(rootItem.dataBinding.bindings, (oldState, bi) => {
+        let newState = oldState;
+        const res = utils.reduce(bi.target.path, (res, path, index) => {
+            if (!res.state) {
+                return {
+                    current: res.current[path.propName] = bi.target.path.length - 1 > index
+                        ? res.current[path.propName] || (res.current[path.propName] = { })
+                        : null,
+                    state: res.state,
+                    value: null,
+                    propName: path.propName
+                };
+            }
+
+            return {
+                current: res.current[path.propName] = bi.target.path.length - 1 > index
+                    ? res.current[path.propName] || (res.current[path.propName] = { })
+                    : res.state[path.propName][3],
+                state: res.state[path.propName][0],
+                value: res.state[path.propName][3],
+                propName: path.propName
+            };
+        }, { current: newState, state: rootItem.state, value: null, propName: '' });
+        return newState.t;
+    }, state || {});
 }
 
 const toDataBindings = (root, bindingsDecl: {
@@ -1278,7 +1310,8 @@ const bindTo = (obj, sourceFrom: () => any, bindingsDecl: { [key: string]: strin
         s: sourceFrom(),
         t: obj,
         state: null,
-        dataBinding: null
+        dataBinding: null,
+        events: new Events()
     };
     const dataBinding = rootItem.dataBinding = toDataBindings(rootItem, bindingsDecl);
     const state = utils.reduce(dataBinding.bindings, (state, bi) => bindToState(rootItem, state, bi), {});
@@ -1288,11 +1321,12 @@ const bindTo = (obj, sourceFrom: () => any, bindingsDecl: { [key: string]: strin
     return rootItem;
 }
 
-const unbindFrom = (rootItem: { s; t; state: IStateRecord, dataBinding: IDataBinding}) => {
+const unbindFrom = (rootItem: { s; t; state: IStateRecord, dataBinding: IDataBinding; events: Events; }) => {
     rootItem.s = null;
     rootItem.t = null;
+    rootItem.events = null;
     rootItem.state = utils.reduce(rootItem.dataBinding.bindings, (state, bi) => bindToState(rootItem, state, bi), {});
     delete mainState[rootItem.dataBinding.bindingId];
 }
 
-export { bindTo, unbindFrom, dispatch, updateLayout };
+export { bindTo, unbindFrom, dispatch, updateLayout, toStateObject, subscribeToChange };

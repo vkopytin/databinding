@@ -48,4 +48,20 @@ class Events {
     }
 }
 
-export { Events };
+type Constructor<T = {}> = new (...args: any[]) => T;
+const withEvents = <TBase extends Constructor>(Base: TBase): (new (...args: any[]) => Events) & TBase => {
+    const child = function Events$Mix(a, b) {
+        Base.apply(this, arguments);
+
+        return Events.apply(this, arguments);
+    };
+
+    Object.assign(child, Events, Base);
+    child.prototype = Base.prototype;
+    Object.assign(child.prototype, Events.prototype);
+    child.prototype.constructor = child;
+
+    return child as any;
+};
+
+export { Events, withEvents };
