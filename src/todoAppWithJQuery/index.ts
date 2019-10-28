@@ -1,6 +1,6 @@
-import { MainView } from './views/mainView';
 import * as $ from 'jquery';
 import './css/main.css';
+import { MainView } from './views/mainView';
 
 
 class App {

@@ -1,7 +1,7 @@
 import { Component, createRef } from 'react';
 import { withEvents } from '../../databinding/events';
-import { template } from '../templates/todoListView';
 import * as utils from '../../utils';
+import { template } from '../templates/todoListView';
 
 
 class TodoListView extends withEvents(Component)<any, any> {

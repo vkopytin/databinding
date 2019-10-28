@@ -1,10 +1,10 @@
 import * as BB from 'backbone';
 import * as $ from 'jquery';
-import { asyncQueue } from '../utils';
-import * as utils from '../utils';
 import { ValueConvertor } from './valueConvertor';
 import { MulticastDelegate } from './multicastDelegate';
 import { Events } from './events';
+import { asyncQueue } from '../utils';
+import * as utils from '../utils';
 
 
 interface IDataBinding {
@@ -36,20 +36,20 @@ interface IBindingInfo {
 
 interface IPropertyInfo {
     filters: any[];
-    getValue: (obj: any) => any;
-    setValue: (obj: any, v: any) => void;
     name: RegExp;
     handler: {
         [key: string]: (...args: any[]) => any;
     } | MulticastDelegate;
+    getValue: (obj: any) => any;
+    setValue: (obj: any, v: any) => void;
     attach: (obj: any, propName: string, handler: (o: any, p: string) => void) => any;
     detach: (obj: any, propName: string, handler: (o: any, p: string) => void) => any;
 }
 
 interface ITypeInfo {
+    type: any;
     getProperty(name: string): IPropertyInfo;
     isEqual(left: any, right: any): boolean;
-    type: any;
 }
 
 interface IStateRecord {
@@ -1253,7 +1253,7 @@ const bindTo = (obj, sourceFrom: () => any, bindingsDecl: { [key: string]: strin
         events: new Events()
     };
     const dataBinding = rootItem.dataBinding = toDataBindings(rootItem, bindingsDecl);
-    const state = utils.reduce(dataBinding.bindings, (state, bi) => bindToState(rootItem, state, bi), {});
+    const state = utils.reduce(dataBinding.bindings, (newState, bi) => bindToState(rootItem, newState, bi), {});
     rootItem.state = state;
 
     return rootItem;

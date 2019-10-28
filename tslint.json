@@ -1,3 +1,30 @@
 {
-    "extends": ["tslint:recommended", "tslint-config-prettier"]
+    "extends": ["tslint:recommended", "tslint-config-prettier"],
+    "rules": {
+        "no-bitwise": false,
+        "no-unused-expression": [true, "allow-fast-null-checks"],
+        "member-access": false,
+        "object-literal-sort-keys": false,
+        "no-consecutive-blank-lines": [true, 2],
+        "no-var-requires": false,
+        "space-before-function-paren": [false, "anonymous"],
+        "trailing-comma": false,
+        "only-arrow-functions": false,
+        "interface-name": false,
+        "arrow-parens": false,
+        "no-namespace": [true, "allow-declarations"],
+        "max-line-length": [true, {"limit": 120, "ignore-pattern": "^import |^export {(.*?)} | ([\"'])((\\\\{2})*|(.*?[^\\\\](\\\\{2})*))\\1"}],
+        "max-classes-per-file": [true, 1, "exclude-class-expressions"],
+        "quotemark": {
+            "options": [
+                "single",
+                "avoid-escape"
+            ]
+        },
+        "object-literal-key-quotes": [true, "consistent"],
+        "one-variable-per-declaration": false,
+        "object-literal-shorthand": false,
+        "cyclomatic-complexity": [true, 20],
+        "eofline": true
+    }
 }

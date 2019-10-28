@@ -1,19 +1,19 @@
 import { Events } from '../../databinding/events';
-import { TodoItem } from '../viewModels/todoItem';
-import { TodoService } from '../models/todos';
 import * as utils from '../../utils';
+import { TodoService } from '../models/todos';
+import { TodoItem } from '../viewModels/todoItem';
 
 
 class MainViewModel extends Events {
     todoTitle = '';
     iItems = [] as TodoItem[];
     varFilterBy = '/';
-    varFilterItems = (i) => true;
     createNewItemCommand = {
         exec: () => this.createNewItem()
     };
-
     init = this.fetchData();
+
+    varFilterItems = (i) => true;
 
     fetchData() {
         const service = TodoService.inst();

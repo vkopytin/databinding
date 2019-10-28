@@ -326,7 +326,9 @@ export function asyncQueueWithPriority(concurrency = 1) {
     };
 
     return {
-        push: (task: (done: () => void) => void, priority = 0) => running < concurrency ? runTask(task, priority) : enqueueTask(task, priority)
+        push: (task: (done: () => void) => void, priority = 0) => running < concurrency
+            ? runTask(task, priority)
+            : enqueueTask(task, priority)
     };
 }
 

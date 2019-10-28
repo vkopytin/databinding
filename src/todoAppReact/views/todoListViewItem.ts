@@ -1,8 +1,8 @@
-import { template } from '../templates/itemView';
-import { bindTo, unbindFrom, updateLayout, toStateObject, subscribeToChange } from '../../databinding';
+import { Component, createRef } from 'react';
+import { bindTo, subscribeToChange, toStateObject, unbindFrom, updateLayout } from '../../databinding';
 import { withEvents } from '../../databinding/events';
 import { ENTER_KEY, ESC_KEY } from '../consts';
-import { Component, createRef } from 'react';
+import { template } from '../templates/itemView';
 
 
 class TodoListViewItem extends withEvents(Component)<any, any> {
@@ -68,14 +68,12 @@ class TodoListViewItem extends withEvents(Component)<any, any> {
     revertOnEscape(e) {
         if (e.which === ESC_KEY) {
             this.setState({ ...this.state, editing: false }, () => {
-                // Also reset the hidden input back to the original value.
                 this.cancelChanges();
             });
         }
     }
 
     cancelChanges() {
-        //this.model.set(this.prevChanges);
         this.props.item.fromData(this.prevChanges);
     }
 

@@ -1,16 +1,15 @@
 import * as $ from 'jquery';
 import { bindTo, unbindFrom, updateLayout } from '../../databinding';
 import { Events } from '../../databinding/events';
-import { TodoListViewItem } from './todoListViewItem';
 import * as utils from '../../utils';
+import { TodoListViewItem } from './todoListViewItem';
 
 
 class TodoListView extends Events {
     options = this.initOptions(this.config);
     $el = this.options.$el;
     children = [] as TodoListViewItem[];
-    filterFn = (i) => true;
-    binding = bindTo(this, () => { }, {
+    binding = bindTo(this, () => ({ }), {
         '-event(change:items)': '.bind(updateChildren)',
         '-event(change:filter)': '.bind(drawItems)'
     });
@@ -21,6 +20,8 @@ class TodoListView extends Events {
         this.initialize();
     }
 
+    filterFn = (i) => true;
+
     initialize() {
         updateLayout(this.binding);
     }
@@ -29,7 +30,7 @@ class TodoListView extends Events {
         const defOptions = {
             $el: $('<ul>'),
             items: [],
-            update: () => { }
+            update: () => { 'empty'; }
         };
         return {
             ...defOptions,

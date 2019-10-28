@@ -1,9 +1,9 @@
-import template = require('../templates/mainView.mustache');
 import * as $ from 'jquery';
 import { bindTo, unbindFrom, updateLayout } from '../../databinding';
+import { Events } from '../../databinding/events';
+import template = require('../templates/mainView.mustache');
 import { MainViewModel } from '../viewModels/mainViewModel';
 import { TodoListView } from './todoListView';
-import { Events } from '../../databinding/events';
 
 
 const ENTER_KEY = 13;
@@ -34,7 +34,6 @@ class MainView extends Events {
     $el = this.options.$el;
     createNewItem = null as { exec(); };
     todoFilter = '/';
-    markAllCompleted = () => { };
 
     binding = bindTo(this, () => new MainViewModel(), {
         '$total.text': 'items.length',
