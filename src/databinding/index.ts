@@ -641,14 +641,6 @@ const getTypeInfo = obj => {
 
 const queue = asyncQueue();
 
-const getValueByProperty = (obj, propName) => {
-    const ti = getTypeInfo(obj);
-    const pi = ti.getProperty(propName);
-    const val = pi.getValue(obj);
-
-    return val;
-}
-
 const setValue = (toState: { itemTi, propName: string, item; }, value: any) => {
     const typeInfo = toState.itemTi; // getTypeInfo(toState.item);
     const pi = typeInfo.getProperty(toState.propName);
