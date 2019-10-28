@@ -8,12 +8,11 @@ import { Events } from './events';
 
 
 interface IDataBinding {
-    onPropertyChange(...args): void;
     bindings: IBindingInfo[];
     root;
-    targetId;
-    sourceId;
-    bindingId;
+    targetId: string;
+    sourceId: string;
+    bindingId: string;
 }
 
 interface IBindingInfo {
@@ -35,7 +34,43 @@ interface IBindingInfo {
     };
 }
 
-const typeDescriptors: Array<{
+interface IPropertyInfo {
+    filters: any[];
+    getValue: (obj: any) => any;
+    setValue: (obj: any, v: any) => void;
+    name: RegExp;
+    handler: {
+        [key: string]: (...args: any[]) => any;
+    } | MulticastDelegate;
+    attach: (obj: any, propName: string, handler: (o: any, p: string) => void) => any;
+    detach: (obj: any, propName: string, handler: (o: any, p: string) => void) => any;
+}
+
+interface ITypeInfo {
+    getProperty(name: string): IPropertyInfo;
+    isEqual(left: any, right: any): boolean;
+    type: any;
+}
+
+interface IStateRecord {
+    [propName: string]: [
+        IStateRecord,
+        any, // item
+        ITypeInfo, // itemTi
+        any, // value
+        (o, p: string) => void,
+        Array<{ h; c; }>,
+        string,
+    ]
+}
+
+interface IStateAction {
+    propName: string;
+    item: any;
+    id?: string;
+}
+
+interface ITypeDescriptors {
     type: any;
     properties: Array<{
         name: RegExp;
@@ -46,7 +81,9 @@ const typeDescriptors: Array<{
         detach?(obj: any, propName: string, handler: (o, p: string) => void);
     }>;
     isEqual(left, right): boolean;
-}> = [{
+}
+
+const typeDescriptors: ITypeDescriptors[] = [{
     type: $,
     isEqual(left, right) {
         return left[0] === right[0];
@@ -598,7 +635,7 @@ const valueFilters = {
     not: v => !v
 }
 
-const getTypeInfo = obj => {
+const getTypeInfo = (obj): ITypeInfo => {
     const typeDescriptor = utils.find(typeDescriptors, td => obj instanceof td.type);
 
     return {
@@ -671,24 +708,6 @@ const splitDeclaration = (d: string) => {
     const rxByDot = /\.(?<!(?:\(([^()]|\(([^()]|\(([^()]|(([^()])*\))*\))*\))*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$)))/g;
 
     return utils.filter(d.split(rxByDot), i => !!i);
-}
-
-interface IStateRecord {
-    [propName: string]: [
-        IStateRecord,
-        any, // item
-        any, // itemTi
-        any, // value
-        (o, p: string) => void,
-        Array<{ h; c; }>,
-        string,
-    ]
-}
-
-interface IStateAction {
-    propName: string;
-    item: any;
-    id?: string;
 }
 
 const createNewStateItem = (rootItem, item, propName, aId: string) => {
@@ -1220,9 +1239,6 @@ const toDataBindings = (root, bindingsDecl: {
         bindingId,
         targetId,
         sourceId,
-        onPropertyChange: (obj, eventData: { propName: string; fullPath?: string; }) => {
-
-        },
         bindings: dataBindings,
         root: root
     }
