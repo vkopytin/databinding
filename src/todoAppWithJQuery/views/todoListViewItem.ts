@@ -1,10 +1,10 @@
 import * as $ from 'jquery';
+import { ENTER_KEY, ESC_KEY } from '../consts';
 import template = require('../templates/itemView.mustache');
+import { TodoItem } from '../viewModels/todoItem';
 import { bindTo, unbindFrom, updateLayout } from '../../databinding';
 import { Events } from '../../databinding/events';
-import { ENTER_KEY, ESC_KEY } from '../consts';
 import * as _ from 'underscore';
-import { TodoItem } from '../viewModels/todoItem';
 
 
 interface TodoListViewItem extends ReturnType<typeof initialize$TodoListViewItem> {
@@ -55,8 +55,8 @@ class TodoListViewItem extends Events {
         const defOptions = {
             $el: $('<li/>'),
             item: null as TodoItem,
-            remove: () => { },
-            update: () => { }
+            remove: () => { 'empty'; },
+            update: () => { 'empty'; }
         };
         return {
             ...defOptions,
@@ -81,13 +81,11 @@ class TodoListViewItem extends Events {
     revertOnEscape(e) {
         if (e.which === ESC_KEY) {
             this.$el.removeClass('editing');
-            // Also reset the hidden input back to the original value.
             this.cancelChanges();
         }
     }
 
     cancelChanges() {
-        //this.model.set(this.prevChanges);
         this.options.item.fromData(this.prevChanges);
     }
 

@@ -2,8 +2,8 @@ import * as _ from 'underscore';
 
 export function forEach<T>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) => any) {
     const length = arr == null ? 0 : arr.length;
-    let index = 0,
-        n = length % 8;
+    let index = 0;
+    let n = length % 8;
 
     if (n > 0) {
         do {
@@ -50,9 +50,8 @@ export function forEach<T>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) =
 export function map<T, R>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) => R): R[] {
     const length = arr == null ? 0 : arr.length;
     const result = new Array(length);
-
-    let index = 0,
-        n = length % 8;
+    let index = 0;
+    let n = length % 8;
 
     if (n > 0) {
         do {
@@ -81,11 +80,10 @@ export function map<T, R>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) =>
 export function filter<T>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) => boolean | any): T[] {
     const length = arr == null ? 0 : arr.length;
     const result = [];
-
-    let resIndex = 0,
-        index = 0,
-        n = length % 8,
-        value;
+    let resIndex = 0;
+    let index = 0;
+    let n = length % 8;
+    let value;
 
     if (n > 0) {
         do {
@@ -140,9 +138,8 @@ export function filter<T>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) =>
 
 export function reduce<T, R = T[]>(arr: T[], cb: (res: R, value: T, index: number, arr: T[]) => R, res?: R): R {
     const length = arr == null ? 0 : arr.length;
-
-    let index = 0,
-        n = length % 8;
+    let index = 0;
+    let n = length % 8;
 
     if (n > 0) {
         do {
@@ -169,9 +166,9 @@ export function reduce<T, R = T[]>(arr: T[], cb: (res: R, value: T, index: numbe
 
 export function find<T>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) => boolean | any): T {
     const length = arr == null ? 0 : arr.length;
-    let index = 0,
-        n = length % 8,
-        value;
+    let index = 0;
+    let n = length % 8;
+    let value;
 
     if (n > 0) {
         do {
@@ -223,6 +220,7 @@ export function find<T>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) => b
 }
 
 export function difference<T>(arr: T[], vals: T[]): T[] {
+    // tslint:disable-next-line
     return filter(arr, (a) => !~vals.indexOf(a));
 }
 
@@ -333,7 +331,7 @@ export function asyncQueueWithPriority(concurrency = 1) {
 }
 
 export function isFunction(obj) {
-    return typeof obj == 'function' || false;
+    return typeof obj === 'function' || false;
 }
 
 export function isNullOrUndefined(obj) {
@@ -345,9 +343,11 @@ export function uuId() { // Public Domain/MIT
     if (typeof window.performance !== 'undefined' && typeof window.performance.now === 'function') {
         d += window.performance.now(); // use high-precision timer if available
     }
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        // tslint:disable-next-line
         const r = (d + Math.random() * 16) % 16 | 0;
         d = Math.floor(d / 16);
+        // tslint:disable-next-line
         return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
 }
