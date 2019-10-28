@@ -1,8 +1,5 @@
 import { Component, createRef } from 'react';
-import * as $ from 'jquery';
-import { bindTo, unbindFrom, dispatch, updateLayout } from '../../databinding';
 import { withEvents } from '../../databinding/events';
-import { TodoListViewItem } from './todoListViewItem';
 import { template } from '../templates/todoListView';
 import * as utils from '../../utils';
 

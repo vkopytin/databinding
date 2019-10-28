@@ -6,7 +6,7 @@ import { Todos } from '../collections/todos';
 import { TodoView } from './todoView';
 import { ENTER_KEY } from '../consts';
 import template = require('../templates/app.mustache');
-import { bindTo, unbindFrom, dispatch, updateLayout } from '../../databinding';
+import { bindTo, unbindFrom, updateLayout } from '../../databinding';
 
 
 class AppView extends BB.View<Todo> {
@@ -45,7 +45,7 @@ class AppView extends BB.View<Todo> {
     setTodoFilter(value) {
         if (this.todoFilter !== value) {
             this.todoFilter = value;
-            dispatch(this, { propName: 'activeFilter' });
+            this.trigger('change:activeFilter');
         }
     }
 

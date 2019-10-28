@@ -1,10 +1,7 @@
-import * as $ from 'jquery';
 import { template } from '../templates/itemView';
-import { bindTo, unbindFrom, updateLayout, dispatch, toStateObject, subscribeToChange } from '../../databinding';
-import { Events, withEvents } from '../../databinding/events';
+import { bindTo, unbindFrom, updateLayout, toStateObject, subscribeToChange } from '../../databinding';
+import { withEvents } from '../../databinding/events';
 import { ENTER_KEY, ESC_KEY } from '../consts';
-import * as _ from 'underscore';
-import { TodoItem } from '../viewModels/todoItem';
 import { Component, createRef } from 'react';
 
 

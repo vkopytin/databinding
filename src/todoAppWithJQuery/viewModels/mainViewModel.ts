@@ -1,4 +1,3 @@
-import { dispatch } from '../../databinding';
 import { Events } from '../../databinding/events';
 import { TodoItem } from '../viewModels/todoItem';
 import { TodoService } from '../models/todos';

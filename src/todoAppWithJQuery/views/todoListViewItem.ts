@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import template = require('../templates/itemView.mustache');
-import { bindTo, unbindFrom, updateLayout, dispatch } from '../../databinding';
+import { bindTo, unbindFrom, updateLayout } from '../../databinding';
 import { Events } from '../../databinding/events';
 import { ENTER_KEY, ESC_KEY } from '../consts';
 import * as _ from 'underscore';
