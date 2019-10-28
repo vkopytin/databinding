@@ -66,7 +66,7 @@ Tasks that databind should perform (toDO):
 Examples of integration with:
 1. [x] javascript + jquery integration;
 2. [x] backbone integration;
-3. [ ] React (if possible and there is a reason);
+3. [x] React (it is possible and there is a small reason to make two way databinding);
 4. [ ] Angular (if possible and there is a reason).
 
 Here is the list of problems with automatic databinding.
