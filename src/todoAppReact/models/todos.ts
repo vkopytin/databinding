@@ -1,7 +1,7 @@
 import { Events } from '../../databinding/events';
 
 
-const serviceId = 'todo-service';
+const serviceId = 'todo-service-react';
 
 let inst = null;
 
