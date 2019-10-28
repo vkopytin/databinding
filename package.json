@@ -62,8 +62,12 @@
     "webpack-cli": "^3.3.7"
   },
   "dependencies": {
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.3",
     "backbone": "^1.4.0",
     "jquery": "^3.4.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "redux": "^4.0.4",
     "rxjs": "^6.5.3",
     "underscore": "^1.9.1"
