@@ -41,7 +41,7 @@ class View {
         this.$el.html(<...>);
         initialize$View(this, this.$el);
 
-        updateLaoyout(this.binding);
+        updateLayout(this.binding);
     }
     ...
     remove() {
