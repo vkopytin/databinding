@@ -9,24 +9,6 @@ import { withEvents } from '../../databinding/events';
 import { TodoListView } from '../views/todoListView';
 
 
-interface MainView extends ReturnType<typeof initialize$MainView> {
-
-}
-
-function initialize$MainView<T>(inst: T, $el) {
-    return Object.assign(inst, {
-        $newTodo: $('.new-todo', $el),
-        $total: $('.total', $el),
-        $main: $('.main', $el),
-        $footer: $('.footer', $el),
-        $toggleAll: $('.toggle-all', $el),
-        $todoCount: $('.todo-count strong', $el),
-        $itemWord: $('.item-word', $el),
-        $itemsWord: $('.items-word', $el),
-        $clearCompleted: $('.clear-completed', $el)
-    });
-}
-
 class MainView extends withEvents(Component)<any, any> {
     ref = createRef();
     createNewItem = null as { exec(); };
@@ -66,12 +48,10 @@ class MainView extends withEvents(Component)<any, any> {
                 ...this.state,
                 ...toStateObject({}, this.binding).state
             });
-            console.log(this.state);
         });
     }
 
     componentDidMount() {
-        initialize$MainView(this, this.ref.current);
         updateLayout(this.binding);
     }
 
@@ -99,7 +79,7 @@ class MainView extends withEvents(Component)<any, any> {
     }
 
     onKeypress(evnt) {
-        if (evnt.which === ENTER_KEY && ('' + this.$newTodo.val()).trim()) {
+        if (evnt.which === ENTER_KEY && ('' + this.prop('newTodoTitle')).trim()) {
             this.createNewItem.exec();
         }
     }

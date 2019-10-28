@@ -34,7 +34,6 @@ class TodoListViewItem extends withEvents(Component)<any, any> {
                 ...this.state,
                 ...toStateObject({}, this.binding).state
             });
-            console.log(this.state);
         });
     }
 
