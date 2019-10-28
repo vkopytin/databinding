@@ -336,6 +336,10 @@ export function isFunction(obj) {
     return typeof obj == 'function' || false;
 }
 
+export function isNullOrUndefined(obj) {
+    return obj === undefined || obj === null;
+}
+
 export function uuId() { // Public Domain/MIT
     let d = new Date().getTime();
     if (typeof window.performance !== 'undefined' && typeof window.performance.now === 'function') {

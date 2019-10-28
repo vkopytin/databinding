@@ -45,8 +45,12 @@ const typeDescriptors: Array<{
         attach?(obj: any, propName: string, handler: (o, p: string) => void);
         detach?(obj: any, propName: string, handler: (o, p: string) => void);
     }>;
+    isEqual(left, right): boolean;
 }> = [{
     type: $,
+    isEqual(left, right) {
+        return left[0] === right[0];
+    },
     properties: [{
         name: /^addClass\((.+)\)$/,
         getter(obj: JQuery, name: string) {
@@ -242,6 +246,9 @@ const typeDescriptors: Array<{
     }]
 }, {
     type: BB.Collection,
+    isEqual(left, right) {
+        return left === right;
+    },
     properties: [{
         name: /^(length)$/i,
         getter(obj: BB.Collection, name: string) {
@@ -294,6 +301,9 @@ const typeDescriptors: Array<{
     }]
 }, {
     type: BB.View,
+    isEqual(left, right) {
+        return left === right;
+    },
     properties: [{
         name: /^bind\((.+)\)$/,
         getter(obj: BB.View, name: string) {
@@ -426,6 +436,9 @@ const typeDescriptors: Array<{
     }]
 }, {
     type: BB.Model,
+    isEqual(left, right) {
+        return left === right;
+    },
     properties: [{
         name: /^get\(([^\)]+)\)$/,
         getter(obj: BB.Model, name: string) {
@@ -451,6 +464,9 @@ const typeDescriptors: Array<{
     }]
 }, {
     type: Object,
+    isEqual(left, right) {
+        return left === right;
+    },
     properties: [{
         name: /^bind\((.+)\)$/,
         getter(obj: BB.View, name: string) {
@@ -615,9 +631,14 @@ const getTypeInfo = obj => {
                 return propInfo;
             }
         },
-        isEqual(typeInfo) {
-
-            return typeDescriptor.type === typeInfo.type;
+        isEqual(left, right) {
+            if (left === right) {
+                return true;
+            }
+            if (left === undefined || right === undefined || left === null || right === null) {
+                return false;
+            }
+            return typeDescriptor ? typeDescriptor.isEqual(left, right) : false;
         }
     };
 }
@@ -654,21 +675,6 @@ const detachEvent = (item, itemTi, propName: string, handler: (obj, propName: st
         pi.detach(item, propName, c);
         listening.splice(listening.indexOf(c), 1);
     }
-}
-
-const isValueEqual = (left, right) => {
-    const leftTi = getTypeInfo(left);
-    const rightTi = getTypeInfo(right);
-
-    if (
-        left === right
-        || leftTi && leftTi.type === $ && leftTi.isEqual(rightTi) && left[0] === right[0]
-    ) {
-
-        return true;
-    }
-
-    return false;
 }
 
 //const rxSplitDot = () => /\.(?!(?:[^(]*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$))/g;
@@ -735,10 +741,7 @@ const updateStateItem = (rootItem, state: IStateRecord, action: IStateAction): I
     const [c, newItem, newItemTi, newValue, newH, newListening] = createNewStateItem(rootItem, action.item, action.propName, action.id);
 
     if (newItem) {
-        if (
-            item !== newItem
-            && !(itemTi && itemTi.type === $ && itemTi.isEqual(newItemTi) && item[0] === newItem[0])
-        ) {
+        if (utils.isNullOrUndefined(item) || !itemTi.isEqual(item, newItem)) {
             item && detachEvent(item, itemTi, action.propName, h, listening);
             attachEvent(newItem, newItemTi, action.propName, newH, newListening);
 
@@ -748,11 +751,7 @@ const updateStateItem = (rootItem, state: IStateRecord, action: IStateAction): I
             };
         } else {
             const valueTi = getTypeInfo(value);
-            const newValueTi = getTypeInfo(newValue);
-            if (
-                value !== newValue
-                && !(valueTi && valueTi.type === $ && valueTi.isEqual(newValueTi) && value[0] === newValue[0])
-            ) {
+            if (utils.isNullOrUndefined(value) || !valueTi.isEqual(value, newValue)) {
 
                 return {
                     ...state,
@@ -825,13 +824,9 @@ const syncState = (rootItem, state: IStateRecord, action: IStateAction): IStateR
     return utils.reduce(Object.keys(state), (oldState, key) => {
         const [children, oldItem, oldItemTi, oldValue, oldH, oldL] = oldState[key];
         const item = action.item;
-        const itemTi = getTypeInfo(item);
 
         if (key === action.propName) {
-            if (
-                oldItem === item
-                || oldItemTi && oldItemTi.type === $ && oldItemTi.isEqual(itemTi) && oldItem[0] === item[0]
-            ) {
+            if (!utils.isNullOrUndefined(oldItem) && oldItemTi.isEqual(oldItem, item)) {
                 const newState = syncStateWithChildrens(rootItem, oldState, action);
                 if (newState !== oldState) {
                     const [newChildren, newItem, newItemTi, newValue, newH, newL] = newState[key];
@@ -863,13 +858,9 @@ const getFullPath = (state: IStateRecord, action: IStateAction): string[] => {
     return utils.reduce(Object.keys(state), (res, key) => {
         const [children, oldItem, oldItemTi] = state[key];
         const item = action.item;
-        const itemTi = getTypeInfo(item);
 
         if (key === action.propName) {
-            if (
-                oldItem === item
-                || oldItemTi && oldItemTi.type === $ && oldItemTi.isEqual(itemTi) && oldItem[0] === item[0]
-            ) {
+            if (!utils.isNullOrUndefined(oldItem) && oldItemTi.isEqual(oldItem, item)) {
 
                 return utils.reduce([...res, key], (subRes, path) => {
                     const subPaths = getFullPath(children, action);
