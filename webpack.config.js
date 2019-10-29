@@ -2,11 +2,13 @@ const path = require('path');
 
 
 module.exports = {
+    devtool: false,
     mode: 'production',
+    optimization: true,
     entry: './src/databinding/index.ts',
     output: {
-        filename: 'databinding.js',
-        path: path.resolve(__dirname, 'lib'),
+        filename: 'index.js',
+        path: path.resolve(__dirname),
         library: 'libpack',
         libraryTarget: 'umd',
         umdNamedDefine: true

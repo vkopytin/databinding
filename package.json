@@ -1,6 +1,6 @@
 {
   "name": "databindjs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Two way data binding in javascript",
   "main": "webpack.config.js",
   "scripts": {
@@ -20,7 +20,7 @@
   ],
   "author": "Volodymyr Kopytin",
   "license": "MIT",
-  "files": [ "lib/**/*" ],
+  "files": [ "index.js" ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vkopytin/databinding.git"
