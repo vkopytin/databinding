@@ -2,8 +2,6 @@ const { spawn } = require('child_process');
 
 const path = require('path');
 
-spawn("tsc", ["-p", "src", "--emitDeclarationOnly", "--declaration", "--declarationDir", "lib/index.d.ts", "--skipLibCheck"]);
-
 module.exports = {
     mode: 'production',
     entry: './src/databinding/index.ts',
