@@ -89,7 +89,7 @@ var DeclarationBundlerPlugin = (function () {
             }
             declarations += lines.join("\n") + "\n\n";
         }
-        var output = "declare module " + this.moduleName + "\n{\n" + declarations + "}";
+        var output = "export = " + this.moduleName + ";\n  declare module " + this.moduleName + "\n{\n" + declarations + "}";
         return output;
     };
     return DeclarationBundlerPlugin;
