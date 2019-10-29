@@ -1,6 +1,6 @@
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
-const config = require('./webpack.config')
+const config = require('./webpack.dev.config')
 
 const ip = process.env.APP_IP || '0.0.0.0'
 const port = (+process.env.SERVER_PORT) || 8080
