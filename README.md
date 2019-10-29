@@ -26,9 +26,9 @@ class View {
     $el = ...
     ...
     binding = bindTo(this, () => new ViewModel(), {
-        '$total.text': 'items.length', // two way to porperty on ViewModel
-        '-$toggleAll.prop(checked)': 'remaining.length|not', // one way from source to target to porperty on ViewModel
-        '+$newTodo.val': 'newTodoTitle', // one way from target to source to porperty on ViewModel
+        '$total.text': 'items.length', // two way to property on ViewModel
+        '-$toggleAll.prop(checked)': 'remaining.length|not', // one way from source to target to property on ViewModel
+        '+$newTodo.val': 'newTodoTitle', // one way from target to source to property on ViewModel
         '-$newTodo.keypress': '.bind(onKeypress)', // one way from source to target to property on View (.) comes first
         '-$todoCount.text': 'remaining.length', 
         '-$itemWord.toggleClass(hidden)': 'remaining.1|bool',
@@ -53,7 +53,8 @@ class View {
 
 This is pure JS solution to implement databinding for javascript application.
 
-To start solution run `yarn watch`
+To buil solution run `yarn watch`
+Right now it is serverless example. It should be copied to any WEB service in order to run it.
 
 The goal is to build fully working databinding solution that is compatible to use for javascript and another frameworks (if possible)
 
