@@ -1,15 +1,15 @@
 {
   "name": "databindjs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Two way data binding in javascript",
   "main": "webpack.config.js",
   "scripts": {
     "prepare" : "yarn build",
-    "build": "webpack --progress --color --display-error-details --mode=development --config webpack.lib.config",
+    "build": "webpack --progress --color --display-error-details --mode=development --config webpack.config",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest",
-    "watch": "webpack --progress --color --display-error-details --mode=development --watch --config webpack.config",
+    "watch": "webpack --progress --color --display-error-details --mode=development --watch --config webpack.dev.config",
     "dev": "node webpack.devserver.config -d --history-api-fallback--hot --inline --progress --colors"
   },
   "keywords": [

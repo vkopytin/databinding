@@ -3,14 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = {
-    mode: 'production',
-    entry: './src/databinding/index.ts',
+    mode: 'development',
+    entry: './src/index.ts',
     output: {
-        filename: 'databinding.js',
-        path: path.resolve(__dirname, 'lib'),
-        library: 'libpack',
-        libraryTarget: 'umd',
-        umdNamedDefine: true
+        filename: 'main.js',
+        path: path.resolve(__dirname, 'dist')
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
@@ -61,5 +58,10 @@ module.exports = {
                 }
             }
         }
-    }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'index.html'
+          })
+    ]
 };
