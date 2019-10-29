@@ -3,7 +3,7 @@ DataBinding in javascript
 
 How it is expected to integrate
 ```javascript
-import { bindTo, unbindFrom, updateLaoyout } from 'databinding';
+import { bindTo, unbindFrom, updateLaoyout } from 'databindjs';
 
 interface View extends ReturnType<typeof initialize$View> { }
 
