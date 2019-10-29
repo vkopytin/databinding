@@ -1,6 +1,6 @@
 {
   "name": "databindjs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Two way data binding in javascript",
   "main": "webpack.config.js",
   "scripts": {
