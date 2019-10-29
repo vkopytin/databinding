@@ -1,7 +1,7 @@
 {
   "name": "databindjs",
   "version": "1.0.0",
-  "description": "Advanced data binding",
+  "description": "Two way data binding in javascript",
   "main": "webpack.config.js",
   "scripts": {
     "prepare" : "yarn build",
