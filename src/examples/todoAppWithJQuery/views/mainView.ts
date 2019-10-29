@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
-import { bindTo, unbindFrom, updateLayout } from '../../databinding';
-import { Events } from '../../databinding/events';
+import { bindTo, unbindFrom, updateLayout } from '../../../databinding';
+import { Events } from '../../../databinding/events';
 import template = require('../templates/mainView.mustache');
 import { MainViewModel } from '../viewModels/mainViewModel';
 import { TodoListView } from './todoListView';

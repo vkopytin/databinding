@@ -17,7 +17,7 @@
     "mvvm"
   ],
   "author": "Volodymyr Kopytin",
-  "license": "ISC",
+  "license": "MIT",
   "jest": {
     "testEnvironment": "node",
     "transform": {

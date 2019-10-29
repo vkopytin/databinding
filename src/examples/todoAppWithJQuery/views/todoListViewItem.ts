@@ -1,7 +1,7 @@
 import * as $ from 'jquery';
 import * as _ from 'underscore';
-import { bindTo, unbindFrom, updateLayout } from '../../databinding';
-import { Events } from '../../databinding/events';
+import { bindTo, unbindFrom, updateLayout } from '../../../databinding';
+import { Events } from '../../../databinding/events';
 import { ENTER_KEY, ESC_KEY } from '../consts';
 import template = require('../templates/itemView.mustache');
 import { TodoItem } from '../viewModels/todoItem';

@@ -1,7 +1,7 @@
-import { Events } from '../../databinding/events';
+import { Events } from '../../../databinding/events';
 
 
-const serviceId = 'todo-service';
+const serviceId = 'todo-service-react';
 
 let inst = null;
 
@@ -10,9 +10,9 @@ const using = <T extends { onsuccess; onerror; result; error; onupgradeneeded; }
     const run = () => {
         obj.onupgradeneeded = (evnt) => origNext(null, obj.result);
         if ('onsuccess' in obj) {
-            obj.onsuccess = (evnt) => next === origNext || next(null, obj.result);
+            obj.onsuccess = (evnt) => next === origNext ? null : next(null, obj.result);
         } else {
-            next === origNext || next(null, obj.result);
+            next === origNext ? null : next(null, obj.result);
         }
         obj.onerror = () => next(obj.error);
     }
@@ -43,6 +43,8 @@ const using = <T extends { onsuccess; onerror; result; error; onupgradeneeded; }
 }
 
 class TodoService extends Events {
+    tableName = 'todos';
+
     static inst(): TodoService {
         if (inst === null) {
             inst = new TodoService();
@@ -56,8 +58,6 @@ class TodoService extends Events {
 
         return inst;
     }
-
-    tableName = 'todos';
 
     constructor() {
         super();

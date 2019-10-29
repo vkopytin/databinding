@@ -1,9 +1,9 @@
 if (/[\?&]contacts[=&]/.test('' + window.location)) {
-    require('./contactsApp');
+    require('./examples/contactsApp');
 } else if (/[\?&]todo=bb&?/.test('' + window.location)) {
-    require('./todoApp');
+    require('./examples/todoApp');
 } else if (/[\?&]todo=r&?/.test('' + window.location)) {
-    require('./todoAppReact');
+    require('./examples/todoAppReact');
 } else {
-    require('./todoAppWithJQuery');
+    require('./examples/todoAppWithJQuery');
 }

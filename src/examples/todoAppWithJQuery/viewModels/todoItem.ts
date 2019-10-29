@@ -1,5 +1,5 @@
-import { Events } from '../../databinding/events';
-import * as  utils from '../../utils';
+import { Events } from '../../../databinding/events';
+import * as  utils from '../../../utils';
 import { TodoService } from '../models/todos';
 
 

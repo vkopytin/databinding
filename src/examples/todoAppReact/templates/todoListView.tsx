@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TodoListView } from '../views/todoListView';
-import * as utils from '../../utils';
+import * as utils from '../../../utils';
 import { TodoListViewItem } from '../views/todoListViewItem';
 
 

@@ -1,6 +1,6 @@
 import { Component, createRef } from 'react';
-import { bindTo, subscribeToChange, toStateObject, unbindFrom, updateLayout } from '../../databinding';
-import { withEvents } from '../../databinding/events';
+import { bindTo, subscribeToChange, toStateObject, unbindFrom, updateLayout } from '../../../databinding';
+import { withEvents } from '../../../databinding/events';
 import { ENTER_KEY, ESC_KEY } from '../consts';
 import { template } from '../templates/itemView';
 
