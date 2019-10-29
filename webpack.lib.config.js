@@ -1,6 +1,5 @@
-const { spawn } = require('child_process');
-
 const path = require('path');
+const DeclarationBundlerPlugin = require('./webpack-plugins/declarations');
 
 module.exports = {
     mode: 'production',
@@ -24,7 +23,7 @@ module.exports = {
             test: /\.css$/,
             use: [{
                 loader: 'style-loader'
-              }, {
+            }, {
                 loader: 'css-loader',
                 options: {
                     importLoaders: 1
@@ -35,5 +34,11 @@ module.exports = {
                 loader: 'postcss-loader'
             }]
         }]
-    }
+    },
+    plugins: [
+        new DeclarationBundlerPlugin({
+            moduleName: 'databindjs',
+            out: 'index.d.ts',
+        })
+    ]
 };

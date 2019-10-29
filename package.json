@@ -6,7 +6,7 @@
   "types": "./lib/index.d.ts",
   "scripts": {
     "prepare": "yarn build",
-    "build": "webpack --progress --color --display-error-details --declaration --mode production --config webpack.lib.config",
+    "build": "webpack --progress --color --display-error-details --mode production --config webpack.lib.config",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest",
