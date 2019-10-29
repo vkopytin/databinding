@@ -2,16 +2,12 @@ const path = require('path');
 
 
 module.exports = {
-    devtool: false,
     mode: 'production',
-    optimization: true,
     entry: './src/databinding/index.ts',
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname),
-        library: 'libpack',
-        libraryTarget: 'umd',
-        umdNamedDefine: true
+        libraryTarget: 'commonjs2'
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
