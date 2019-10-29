@@ -53,7 +53,8 @@ class View {
 
 This is pure JS solution to implement databinding for javascript application.
 
-To start solution run `yarn watch`
+To buil solution run `yarn watch`
+Right now it is serverless example. It should be copied to any WEB service in order to run it.
 
 The goal is to build fully working databinding solution that is compatible to use for javascript and another frameworks (if possible)
 
