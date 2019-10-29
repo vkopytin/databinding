@@ -7,7 +7,8 @@
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest",
-    "watch": "webpack --progress --color --display-error-details --mode=development --watch --config webpack.config"
+    "watch": "webpack --progress --color --display-error-details --mode=development --watch --config webpack.config",
+    "dev": "node webpack.devserver.config -d --history-api-fallback--hot --inline --progress --colors"
   },
   "keywords": [
     "two-way",
@@ -66,7 +67,8 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.3",
     "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
     "@types/react": "^16.9.11",

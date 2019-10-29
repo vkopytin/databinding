@@ -81,9 +81,7 @@ class EmployeeManager {
             console.log("clicked on login");
         });
   
-        BB.history.start({
-            root: '/data-binding/'
-        });
+        BB.history.start();
     }
   
     auth() {
