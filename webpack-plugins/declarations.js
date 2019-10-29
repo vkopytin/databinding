@@ -69,9 +69,9 @@ var DeclarationBundlerPlugin = (function () {
                 //exclude empty lines
                 var excludeLine = line == "";
                 //exclude export statements
-                excludeLine = excludeLine || line.indexOf("export =") !== -1;
+                excludeLine = excludeLine || /export\s+[={]+/.test(line);
                 //exclude import statements
-                excludeLine = excludeLine || (/import ([a-z0-9A-Z_-]+) = require\(/).test(line);
+                excludeLine = excludeLine || /import\s+([*{a-z0-9A-Z_-]+)/.test(line);
                 //if defined, check for excluded references
                 if (!excludeLine && this.excludedReferences && line.indexOf("<reference") !== -1) {
                     excludeLine = this.excludedReferences.some(function (reference) { return line.indexOf(reference) !== -1; });
