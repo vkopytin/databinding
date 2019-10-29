@@ -35,8 +35,10 @@ var DeclarationBundlerPlugin = (function () {
   
             var declarationFiles = {};
             for (var filename in compilation.assets) {
-                if (filename.indexOf('.d.ts') !== -1 && ~files.indexOf(filename)) {
-                    declarationFiles[filename] = compilation.assets[filename];
+                if (filename.indexOf('.d.ts') !== -1) {
+                    if (~files.indexOf(filename)) {
+                        declarationFiles[filename] = compilation.assets[filename];
+                    }
                     delete compilation.assets[filename];
                 }
             }
