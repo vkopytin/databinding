@@ -53,8 +53,8 @@ class View {
 
 This is pure JS solution to implement databinding for javascript application.
 
-To buil solution run `yarn watch`
-To start dev server run `yarn dev`. It would run local server on https://localhost:8080/index.html by default.
+To buil solution run `yarn watch`    
+To start dev server run `yarn dev`. It would run local server on https://localhost:8080/index.html by default.    
 
 The goal is to build fully working databinding solution that is compatible to use for javascript and another frameworks (if possible)
 
