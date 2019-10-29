@@ -4,6 +4,7 @@
   "description": "Advanced data binding",
   "main": "webpack.config.js",
   "scripts": {
+    "build": "webpack --progress --color --display-error-details --mode=development --config webpack.lib.config",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest",

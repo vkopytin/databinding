@@ -1,3 +1,11 @@
+import { useIntegration } from './databinding';
+import { jQueryIntegration } from './examples/jquery.integration';
+import { backboneIntegration } from './examples/backbone.integration';
+
+
+useIntegration(jQueryIntegration);
+useIntegration(backboneIntegration);
+
 if (/[\?&]contacts[=&]/.test('' + window.location)) {
     require('./examples/contactsApp');
 } else if (/[\?&]todo=bb&?/.test('' + window.location)) {

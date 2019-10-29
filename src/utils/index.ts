@@ -1,5 +1,3 @@
-import * as _ from 'underscore';
-
 export function forEach<T>(arr: T[], cb: (item?: T, index?: number, arr?: T[]) => any) {
     const length = arr == null ? 0 : arr.length;
     let index = 0;
@@ -284,7 +282,7 @@ export function asyncQueue(concurrency = 1) {
         try {
             task(done, operationId);
         } catch (ex) {
-            _.delay(() => { throw ex; });
+            setTimeout(() => { throw ex; });
             done();
         }
     };
@@ -311,7 +309,7 @@ export function asyncQueueWithPriority(concurrency = 1) {
         try {
             task(done);
         } catch (ex) {
-            _.delay(() => { throw ex; });
+            setTimeout(() => { throw ex; });
             done();
         }
     };
