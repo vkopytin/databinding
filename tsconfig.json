@@ -8,7 +8,7 @@
         "declaration": true,
         "baseUrl": "./",
         "paths": {
-            "databindjs": [ "src/databinding/index" ]
+            "databindjs": [ "src/databindjs/index" ]
         }
     },
     "filesGlob": [

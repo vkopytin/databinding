@@ -14,7 +14,7 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js'],
         alias: {
             // databindjs: path.resolve(__dirname, 'lib/index')
-            databindjs: path.resolve(__dirname, 'src/databinding/index')
+            databindjs: path.resolve(__dirname, 'src/databindjs/index')
         }
     },
     module: {
