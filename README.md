@@ -1,5 +1,5 @@
-# databinding
-DataBinding in javascript
+# databindjs
+Databinding in javascript
 
 How it is expected to integrate
 ```javascript
