@@ -1,5 +1,4 @@
-import { Events } from '../../../databinding/events';
-import * as  utils from '../../../utils';
+import { Events, utils } from 'databindjs';
 import { TodoService } from '../models/todos';
 
 

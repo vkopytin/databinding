@@ -4,7 +4,7 @@ import { BaseView } from './base';
 import * as _ from 'underscore';
 import template = require('../templates/employee.mustache');
 import { EmployeeModel } from '../models/main';
-import { bindTo, unbindFrom, updateLayout } from '../../../databinding';
+import { bindTo, unbindFrom, updateLayout } from 'databindjs';
 
 
 class EmployeeView extends BaseView<EmployeeModel> {

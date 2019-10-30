@@ -1,7 +1,6 @@
-import { Events } from '../../../databinding/events';
+import { Events, utils } from 'databindjs';
 import { TodoItem } from '../viewModels/todoItem';
 import { TodoService } from '../models/todos';
-import * as utils from '../../../utils';
 
 
 class MainViewModel extends Events {

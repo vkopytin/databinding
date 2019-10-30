@@ -1,6 +1,5 @@
 import { Component, createRef } from 'react';
-import { withEvents } from '../../../databinding/events';
-import * as utils from '../../../utils';
+import { utils, withEvents } from 'databindjs';
 import { template } from '../templates/todoListView';
 
 

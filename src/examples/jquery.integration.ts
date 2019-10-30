@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import { MulticastDelegate } from '../databinding/multicastDelegate';
+import { MulticastDelegate } from 'databindjs';
 
 
 export const jQueryIntegration = [{

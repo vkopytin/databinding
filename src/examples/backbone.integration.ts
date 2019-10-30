@@ -1,5 +1,5 @@
 import * as BB from 'backbone';
-import * as utils from '../utils';
+import { utils } from 'databindjs';
 
 
 export const backboneIntegration = [{

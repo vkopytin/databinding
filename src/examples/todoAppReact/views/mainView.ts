@@ -1,11 +1,9 @@
 import { Component, createRef } from 'react';
-import * as ReactDOM from 'react-dom';
 import { template } from '../templates/mainView';
-import { bindTo, updateLayout, unbindFrom, subscribeToChange, toStateObject } from '../../../databinding';
+import { bindTo, updateLayout, unbindFrom, subscribeToChange, toStateObject, withEvents } from 'databindjs';
 import * as $ from 'jquery';
 import { MainViewModel } from '../viewModels/mainViewModel';
-import { ENTER_KEY, ESC_KEY } from '../consts';
-import { withEvents } from '../../../databinding/events';
+import { ENTER_KEY } from '../consts';
 import { TodoListView } from '../views/todoListView';
 
 

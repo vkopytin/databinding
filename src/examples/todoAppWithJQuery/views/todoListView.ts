@@ -1,7 +1,5 @@
 import * as $ from 'jquery';
-import { bindTo, unbindFrom, updateLayout } from '../../../databinding';
-import { Events } from '../../../databinding/events';
-import * as utils from '../../../utils';
+import { bindTo, Events, unbindFrom, updateLayout, utils } from 'databindjs';
 import { TodoListViewItem } from './todoListViewItem';
 
 

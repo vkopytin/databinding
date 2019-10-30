@@ -1,4 +1,4 @@
-import { Events } from '../../../databinding/events';
+import { Events } from 'databindjs';
 
 
 const serviceId = 'todo-service-react';

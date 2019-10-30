@@ -11,7 +11,11 @@ module.exports = {
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
-        extensions: ['.ts', '.tsx', '.js']
+        extensions: ['.ts', '.tsx', '.js'],
+        alias: {
+            // databindjs: path.resolve(__dirname, 'lib/index')
+            databindjs: path.resolve(__dirname, 'src/databinding/index')
+        }
     },
     module: {
         rules: [{

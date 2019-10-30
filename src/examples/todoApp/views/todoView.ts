@@ -3,7 +3,7 @@ import * as _ from 'underscore';
 import { ESC_KEY, ENTER_KEY } from '../consts';
 import { Todo } from '../models/todo';
 import template = require('../templates/todo.mustache');
-import { bindTo, unbindFrom, updateLayout } from '../../../databinding';
+import { bindTo, unbindFrom, updateLayout } from 'databindjs';
 
 
 class TodoView extends BB.View<Todo> {

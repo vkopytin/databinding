@@ -5,7 +5,11 @@
         "sourceMap": true,
         "target": "es5",
         "jsx": "react",
-        "declaration": true
+        "declaration": true,
+        "baseUrl": "./",
+        "paths": {
+            "databindjs": [ "src/databinding/index" ]
+        }
     },
     "filesGlob": [
         "./src/*.d.ts"

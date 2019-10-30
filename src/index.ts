@@ -1,4 +1,4 @@
-import { useIntegration } from './databinding';
+import { useIntegration } from 'databindjs';
 import { jQueryIntegration } from './examples/jquery.integration';
 import { backboneIntegration } from './examples/backbone.integration';
 
