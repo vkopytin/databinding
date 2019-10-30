@@ -67,7 +67,7 @@ Tasks that databind should perform (toDO):
 Examples of integration with:
 1. [x] javascript + jquery integration;
 2. [x] backbone integration;
-3. [x] React (it is possible and there is a small reason to make two way databinding);
+3. [x] React (it is possible and there is a small reason - to make two way databinding (seems like it is equal just to use view model directly in JSX. A bit more JS adjustments with onChange events and listen to view model change));
 4. [ ] Angular (if possible and there is a reason).
 
 Here is the list of problems with automatic databinding.
