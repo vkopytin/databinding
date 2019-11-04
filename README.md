@@ -65,6 +65,7 @@ Tasks that databind should perform (toDO):
 2. [x] Allow slightly modify value over databinding declaration. e.g when it is like simple boolean value. And need to apply against `not true` instead when property returns just `true`. Right now it is resolved over pipe declaration;
 2. [ ] Convert values during transfer from one type to another. Ideally it should allow to specify custom type convertes as well;
 3. [ ] Validate data before transfer. Provide validation error report. Maybe rise validation error exeption.
+4. [ ] (The most tough task) Allow integration with template engine along with pure DOM elements.
 
 Examples of integration with:
 1. [x] javascript + jquery integration;
