@@ -71,6 +71,15 @@ interface IStateAction {
     id?: string;
 }
 
+interface IRootItem {
+    s;
+    t;
+    res: any[];
+    state: IStateRecord;
+    dataBinding: IDataBinding;
+    events: Events;
+}
+
 const valueFilters = {
     bool: v => !!v,
     not: v => !v
@@ -539,7 +548,7 @@ const transferValue = (rootItem, state: IStateRecord, dataBinding: IDataBinding,
     return state;
 }
 
-const updateLayout = (obj: { s; t; state: IStateRecord; dataBinding: IDataBinding; events: Events; }) => {
+const updateLayout = (obj: IRootItem) => {
     queue.push((next, opId) => {
         let newState = syncState(obj, obj.state, {
             item: obj,
@@ -589,41 +598,13 @@ const bindToState = (root, state: IStateRecord, bi: IBindingInfo) => {
     return newState;
 }
 
-const subscribeToChange = (rootItem: { events: Events; }, handler) => {
+const subscribeToChange = (rootItem: IRootItem, handler) => {
     rootItem.events.on('change', handler);
-}
-
-const toStateObject = (state, rootItem: { s; t; state: IStateRecord, dataBinding: IDataBinding }) => {
-    return utils.reduce(rootItem.dataBinding.bindings, (oldState, bi) => {
-        let newState = oldState;
-        const res = utils.reduce(bi.target.path, (res, path, index) => {
-            if (!res.state) {
-                return {
-                    current: res.current[path.propName] = bi.target.path.length - 1 > index
-                        ? res.current[path.propName] || (res.current[path.propName] = { })
-                        : null,
-                    state: res.state,
-                    value: null,
-                    propName: path.propName
-                };
-            }
-
-            return {
-                current: res.current[path.propName] = bi.target.path.length - 1 > index
-                    ? res.current[path.propName] || (res.current[path.propName] = { })
-                    : res.state[path.propName][3],
-                state: res.state[path.propName][0],
-                value: res.state[path.propName][3],
-                propName: path.propName
-            };
-        }, { current: newState, state: rootItem.state, value: null, propName: '' });
-        return newState.t;
-    }, state || {});
 }
 
 const toDataBindings = (root, bindingsDecl: {
     [key: string]: string | string[]
-}): IDataBinding => {
+}, targetPrefix = 't'): IDataBinding => {
     let dataBinding;
     const bindingId = utils.uniqueId('binding-');
     const targetId = utils.uniqueId('target-');
@@ -632,7 +613,7 @@ const toDataBindings = (root, bindingsDecl: {
     const dataBindings = utils.reduce(declaration, ([first, ...res], decl, index) => {
         let a, isTargetReadWrite, isSourceReadWrite, fullPath;
         [a, isTargetReadWrite, fullPath] = decl.split(/^([-+])?(.+)/i);
-        const targetPath = splitDeclaration(`t.${fullPath}`);
+        const targetPath = splitDeclaration(`${targetPrefix}.${fullPath}`);
         if (index % 2 === 0) {
 
             return [{
@@ -655,7 +636,7 @@ const toDataBindings = (root, bindingsDecl: {
         let isTargetRoot: boolean;
         if (/^\./.test(decl)) {
             [a, isSourceReadWrite, fullPath] = decl.split(/^([-+])?(.+)/i);
-            sourcePath = splitDeclaration(`t${fullPath}`.replace(/^\./, ''));
+            sourcePath = splitDeclaration(`${targetPrefix}${fullPath}`.replace(/^\./, ''));
             isTargetRoot = true;
         } else {
             [a, isSourceReadWrite, fullPath] = decl.split(/^([-+])?(.+)/i);
@@ -686,9 +667,10 @@ const toDataBindings = (root, bindingsDecl: {
 };
 
 const bindTo = (obj, sourceFrom: () => any, bindingsDecl: { [key: string]: string | string[] }) => {
-    const rootItem = {
+    const rootItem: IRootItem = {
         s: sourceFrom(),
         t: obj,
+        res: [],
         state: null,
         dataBinding: null,
         events: new Events()
@@ -700,11 +682,48 @@ const bindTo = (obj, sourceFrom: () => any, bindingsDecl: { [key: string]: strin
     return rootItem;
 }
 
-const unbindFrom = (rootItem: { s; t; state: IStateRecord, dataBinding: IDataBinding; events: Events; }) => {
+const addBindingTo = (rootItem: IRootItem, bindingsDecl: { [key: string]: string | string[] }) => {
+    const index = rootItem.res.length;
+    const dataBinding = toDataBindings(rootItem, bindingsDecl);
+    rootItem.dataBinding.bindings = [...rootItem.dataBinding.bindings, ...dataBinding.bindings];
+    const state = utils.reduce(dataBinding.bindings, (newState, bi) => bindToState(rootItem, newState, bi), rootItem.state);
+    rootItem.state = state;
+    const newSourceState = utils.reduce(dataBinding.bindings, (stateInfo, bi) => {
+        const oldState = rootItem.state;
+        const source = utils.reduce(bi.target.path, (res, path) => {
+            if (!res.state) {
+
+                return {
+                    state: res.state,
+                    item: null,
+                    itemTi: null,
+                    value: null,
+                    propName: path.propName,
+                    onChange: (o, p) => { }
+                };
+            }
+
+            return {
+                state: res.state[path.propName][0],
+                item: res.state[path.propName][1],
+                itemTi: res.state[path.propName][2],
+                value: res.state[path.propName][3],
+                propName: path.propName,
+                onChange: res.state[path.propName][4]
+            };
+        }, { state: oldState, item: null, itemTi: null, value: null, propName: '', onChange: null });
+
+        return [...stateInfo, source];
+    }, []);
+
+    return newSourceState[0];
+}
+
+const unbindFrom = (rootItem: IRootItem) => {
     rootItem.s = null;
     rootItem.t = null;
     rootItem.events = null;
     rootItem.state = utils.reduce(rootItem.dataBinding.bindings, (state, bi) => bindToState(rootItem, state, bi), {});
 }
 
-export { bindTo, unbindFrom, updateLayout, toStateObject, subscribeToChange };
+export { addBindingTo, bindTo, IRootItem, unbindFrom, updateLayout, subscribeToChange };

@@ -1,19 +1,38 @@
 import * as React from 'react';
 import { TodoListView } from '../views/todoListView';
 import { MainView } from '../views/mainView';
+import { addBindingTo } from 'databindjs';
+import * as $ from 'jquery';
 
 
 const tc = (a, b) => b ? a : '';
+
+const Bind = (props, config) => {
+    const view = props.view;
+    const propName = props.name;
+    const bindInfo = addBindingTo(view.binding, { [propName + '.val']: props.val });
+    return React.cloneElement(props.children, {
+        ref: e => view[propName] = $(e),
+        value: bindInfo.value || '',
+        onChange: e => bindInfo.onChange($(e.target), 'val')
+    });
+}
+
+const Template = (props, config) => {
+    
+}
 
 export const template = (view: MainView, ref) => <div ref={ref}>
     <section className="todoapp">
         <header className="header">
             <h1>todos</h1>
+
             <input className="new-todo" placeholder="What needs to be done?"
                 value={view.prop('newTodoTitle')}
                 onChange={e => view.prop('newTodoTitle', e.target['value'])}
                 onKeyPress={e => view.onKeypress(e)}
-            />
+                />
+ 
         </header>
         <section className={[
             "main",

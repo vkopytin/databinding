@@ -1,5 +1,5 @@
 import { Component, createRef } from 'react';
-import { bindTo, subscribeToChange, toStateObject, unbindFrom, updateLayout, withEvents } from 'databindjs';
+import { bindTo, subscribeToChange, unbindFrom, updateLayout, withEvents } from 'databindjs';
 import { ENTER_KEY, ESC_KEY } from '../consts';
 import { template } from '../templates/itemView';
 
@@ -27,8 +27,7 @@ class TodoListViewItem extends withEvents(Component)<any, any> {
         super(props);
         subscribeToChange(this.binding, () => {
             this.setState({
-                ...this.state,
-                ...toStateObject({}, this.binding).state
+                ...this.state
             });
         });
     }

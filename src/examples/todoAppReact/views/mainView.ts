@@ -1,6 +1,6 @@
 import { Component, createRef } from 'react';
 import { template } from '../templates/mainView';
-import { bindTo, updateLayout, unbindFrom, subscribeToChange, toStateObject, withEvents } from 'databindjs';
+import { bindTo, updateLayout, unbindFrom, subscribeToChange, withEvents } from 'databindjs';
 import * as $ from 'jquery';
 import { MainViewModel } from '../viewModels/mainViewModel';
 import { ENTER_KEY } from '../consts';
@@ -43,8 +43,7 @@ class MainView extends withEvents(Component)<any, any> {
         super(props);
         subscribeToChange(this.binding, () => {
             this.setState({
-                ...this.state,
-                ...toStateObject({}, this.binding).state
+                ...this.state
             });
         });
     }
