@@ -3,7 +3,7 @@ const DeclarationBundlerPlugin = require('./webpack-plugins/declarations');
 
 module.exports = {
     mode: 'production',
-    entry: './src/databinding/index.ts',
+    entry: './src/databindjs/index.ts',
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname, 'lib'),
