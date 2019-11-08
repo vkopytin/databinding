@@ -72,6 +72,9 @@ interface IStateAction {
 }
 
 interface IRootItem {
+    bindingsDecl: {
+        [key: string]: string | string[]
+    };
     s;
     t;
     res: any[];
@@ -144,11 +147,11 @@ const attachEvent = (item, itemTi, propName: string, handler: (obj, propName: st
 const detachEvent = (item, itemTi, propName: string, handler: (obj, propName: string) => void, listening: Array<{ h; c; }>) => {
     const typeInfo = itemTi; // getTypeInfo(stateItem.item);
     const pi = typeInfo.getProperty(propName);
-    const c = utils.find(listening, l => l[0] === handler);
+    const listener = utils.find(listening, l => l.h === handler);
 
-    if (c) {
-        pi.detach(item, propName, c);
-        listening.splice(listening.indexOf(c), 1);
+    if (listener) {
+        pi.detach(item, propName, listener.c);
+        listening.splice(listening.indexOf(listener), 1);
     }
 }
 
@@ -668,6 +671,7 @@ const toDataBindings = (root, bindingsDecl: {
 
 const bindTo = (obj, sourceFrom: () => any, bindingsDecl: { [key: string]: string | string[] }) => {
     const rootItem: IRootItem = {
+        bindingsDecl: bindingsDecl,
         s: sourceFrom(),
         t: obj,
         res: [],
@@ -682,11 +686,18 @@ const bindTo = (obj, sourceFrom: () => any, bindingsDecl: { [key: string]: strin
     return rootItem;
 }
 
+const releaseBindings = (state: IStateRecord, bindingsDecl: { [key: string]: string | string[] }) => {
+    const bindingsToRelease = toDataBindings({}, bindingsDecl);
+    const newState = utils.reduce(bindingsToRelease.bindings, (newState, bi) => bindToState({}, newState, bi), state);
+    return newState;
+}
+
 const addBindingTo = (rootItem: IRootItem, bindingsDecl: { [key: string]: string | string[] }) => {
     const index = rootItem.res.length;
-    const dataBinding = toDataBindings(rootItem, bindingsDecl);
-    rootItem.dataBinding.bindings = [...rootItem.dataBinding.bindings, ...dataBinding.bindings];
-    const state = utils.reduce(dataBinding.bindings, (newState, bi) => bindToState(rootItem, newState, bi), rootItem.state);
+    const newState = releaseBindings(rootItem.state, bindingsDecl);
+    const dataBinding = toDataBindings(rootItem, rootItem.bindingsDecl = { ...rootItem.bindingsDecl, ...bindingsDecl });
+    rootItem.dataBinding.bindings = dataBinding.bindings;
+    const state = utils.reduce(dataBinding.bindings, (newState, bi) => bindToState(rootItem, newState, bi), newState);
     rootItem.state = state;
     const newSourceState = utils.reduce(dataBinding.bindings, (stateInfo, bi) => {
         const oldState = rootItem.state;
@@ -723,7 +734,7 @@ const unbindFrom = (rootItem: IRootItem) => {
     rootItem.s = null;
     rootItem.t = null;
     rootItem.events = null;
-    rootItem.state = utils.reduce(rootItem.dataBinding.bindings, (state, bi) => bindToState(rootItem, state, bi), {});
+    rootItem.state = utils.reduce(rootItem.dataBinding.bindings, (state, bi) => bindToState(rootItem, state, bi), rootItem.state);
 }
 
 export { addBindingTo, bindTo, IRootItem, unbindFrom, updateLayout, subscribeToChange };
