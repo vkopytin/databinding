@@ -689,45 +689,61 @@ const bindTo = (obj, sourceFrom: () => any, bindingsDecl: { [key: string]: strin
 const releaseBindings = (state: IStateRecord, bindingsDecl: { [key: string]: string | string[] }) => {
     const bindingsToRelease = toDataBindings({}, bindingsDecl);
     const newState = utils.reduce(bindingsToRelease.bindings, (newState, bi) => bindToState({}, newState, bi), state);
-    return newState;
+    return {
+        newState,
+        bindingsToRelease
+    };
 }
 
 const addBindingTo = (rootItem: IRootItem, bindingsDecl: { [key: string]: string | string[] }) => {
     const index = rootItem.res.length;
-    const newState = releaseBindings(rootItem.state, bindingsDecl);
+    const releaseInfo = releaseBindings(rootItem.state, bindingsDecl);
     const dataBinding = toDataBindings(rootItem, rootItem.bindingsDecl = { ...rootItem.bindingsDecl, ...bindingsDecl });
     rootItem.dataBinding.bindings = dataBinding.bindings;
-    const state = utils.reduce(dataBinding.bindings, (newState, bi) => bindToState(rootItem, newState, bi), newState);
+    const state = utils.reduce(dataBinding.bindings, (newState, bi) => bindToState(rootItem, newState, bi), releaseInfo.newState);
     rootItem.state = state;
     const newSourceState = utils.reduce(dataBinding.bindings, (stateInfo, bi) => {
         const oldState = rootItem.state;
+        const currentTargetPath = utils.map(bi.target.path, p => p.propName).join('.');
+        const newTargetPath = utils.map(releaseInfo.bindingsToRelease.bindings[0].target.path, p => p.propName).join('.');
+        if (currentTargetPath !== newTargetPath) {
+            return stateInfo;
+        }
         const source = utils.reduce(bi.target.path, (res, path) => {
             if (!res.state) {
 
                 return {
                     state: res.state,
-                    item: null,
-                    itemTi: null,
-                    value: null,
-                    propName: path.propName,
-                    onChange: (o, p) => { }
+                    bindInfo: [...res.bindInfo, {
+                        item: null,
+                        itemTi: null,
+                        value: null,
+                        propName: path.propName,
+                        onChange: (o, p) => { }
+                    }]
                 };
             }
 
             return {
                 state: res.state[path.propName][0],
-                item: res.state[path.propName][1],
-                itemTi: res.state[path.propName][2],
-                value: res.state[path.propName][3],
-                propName: path.propName,
-                onChange: res.state[path.propName][4]
+                bindInfo: [...res.bindInfo, {
+                    item: res.state[path.propName][1],
+                    itemTi: res.state[path.propName][2],
+                    value: res.state[path.propName][3],
+                    propName: path.propName,
+                    onChange: res.state[path.propName][4]
+                }]
             };
-        }, { state: oldState, item: null, itemTi: null, value: null, propName: '', onChange: null });
+        }, { state: oldState, bindInfo: []});
 
         return [...stateInfo, source];
     }, []);
+    const resInfo = newSourceState[0].bindInfo;
 
-    return newSourceState[0];
+    return {
+        root: resInfo[1],
+        last: utils.last(resInfo)
+    };
 }
 
 const unbindFrom = (rootItem: IRootItem) => {

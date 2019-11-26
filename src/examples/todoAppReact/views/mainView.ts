@@ -30,7 +30,7 @@ class MainView extends withEvents(Component)<any, any> {
         '-prop(todoCount)': 'remaining.length',
         '-prop(showClearCompleted)': 'completed.length|not',
         '-prop(manyTasks)': 'remaining.1|bool',
-        'prop(newTodoTitle)': 'newTodoTitle',
+//        'prop(newTodoTitle)': 'newTodoTitle',
         'itemsListView.items': 'items',
         'itemsListView.filter': 'filterItems',
         '-createNewItem': 'createNewItemCommand',
@@ -56,7 +56,7 @@ class MainView extends withEvents(Component)<any, any> {
         unbindFrom(this.binding);
     }
 
-    prop(propName, val?) {
+    prop<T extends MainView['state'], K extends keyof T>(propName, val?): T[K] {
         if (arguments.length > 1) {
             this.state[propName] = val;
             this.trigger('change:prop(' + propName + ')');
@@ -67,8 +67,8 @@ class MainView extends withEvents(Component)<any, any> {
     activeFilter(val?) {
         if (arguments.length && val !== this.todoFilter) {
             this.todoFilter = val;
-            $(this.ref.current).find('.filters li a').toggleClass('selected', false);
-            $(this.ref.current).find(`.filters li a[href='#/${val}']`).toggleClass('selected', true);
+            $(this.ref.current).find('.filters a').toggleClass('active', false);
+            $(this.ref.current).find(`.filters a[href='#/${val}']`).toggleClass('active', true);
             this.trigger('change:activeFilter');
         }
 
@@ -76,7 +76,7 @@ class MainView extends withEvents(Component)<any, any> {
     }
 
     onKeypress(evnt) {
-        if (evnt.which === ENTER_KEY && ('' + this.prop('newTodoTitle')).trim()) {
+        if (evnt.which === ENTER_KEY) {
             this.createNewItem.exec();
         }
     }

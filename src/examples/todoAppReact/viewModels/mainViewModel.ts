@@ -34,7 +34,7 @@ class MainViewModel extends Events {
         });
     }
 
-    newTodoTitle(value) {
+    newTodoTitle(value?) {
         if (arguments.length > 0) {
             this.todoTitle = value;
             this.trigger('change:newTodoTitle');
@@ -61,11 +61,13 @@ class MainViewModel extends Events {
     }
 
     createNewItem() {
-        this.addItem(new TodoItem({
-            completed: false,
-            title: this.todoTitle
-        }));
-        this.newTodoTitle('');
+        if (this.newTodoTitle()) {
+            this.addItem(new TodoItem({
+                completed: false,
+                title: this.todoTitle
+            }));
+            this.newTodoTitle('');
+        }
     }
 
     addItem(item) {

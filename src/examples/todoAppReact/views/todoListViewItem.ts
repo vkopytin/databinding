@@ -8,6 +8,7 @@ class TodoListViewItem extends withEvents(Component)<any, any> {
     ref = createRef();
     editInput = null;
     state = {
+        id: this.props.item.id(),
         labelTitle: this.props.item.title(),
         editTitle: this.props.item.title(),
         completed: this.props.item.completed(),

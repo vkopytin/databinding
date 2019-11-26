@@ -1,7 +1,8 @@
 import { MainView } from './views/mainView';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import './css/main.css';
+import './sass/ratchet.scss';
+import './sass/theme-ios.scss';
 
 
 class App {
