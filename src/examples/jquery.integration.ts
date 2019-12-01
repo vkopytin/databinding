@@ -121,19 +121,21 @@ export const jQueryIntegration = [{
         detach(obj, propName: string) { }
     }, {
         name: /^(keypress)$/,
-        getter(obj: JQuery) {
-            return this.handler.getHandler(obj[0]);
+        getter(obj: JQuery, propName: string) {
+            return this.handler.getHandler(obj[0], propName);
         },
         setter(obj: JQuery, propName: string, value) {
-            this.handler.addHandler(obj[0], value);
+            this.handler.addHandler(obj[0], propName, value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, event.type, evnt]),
         attach(obj: JQuery, propName: string) {
-            obj.on('keypress', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            obj.on(eventName, this.handler.invoke);
         },
         detach(obj: JQuery, propName: string) {
-            this.handler.removeHandler(obj[0]);
-            obj.off('keypress', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            this.handler.removeHandler(obj[0], eventName);
+            obj.off(eventName, this.handler.invoke);
         }
     }, {
         name: /^(click)$/,
@@ -141,15 +143,17 @@ export const jQueryIntegration = [{
             return this.handler.getHandler(obj[0]);
         },
         setter(obj: JQuery, propName: string, value) {
-            this.handler.addHandler(obj[0], value);
+            this.handler.addHandler(obj[0], propName, value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, event.type, evnt]),
         attach(obj: JQuery, propName: string) {
-            obj.on('click', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            obj.on(eventName, this.handler.invoke);
         },
         detach(obj: JQuery, propName: string) {
-            this.handler.removeHandler(obj[0]);
-            obj.off('click', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            this.handler.removeHandler(obj[0], eventName);
+            obj.off(eventName, this.handler.invoke);
         }
     }, {
         name: /^(dblclick)$/,
@@ -157,15 +161,17 @@ export const jQueryIntegration = [{
             return this.handler.getHandler(obj[0]);
         },
         setter(obj: JQuery, propName: string, value) {
-            this.handler.addHandler(obj[0], value);
+            this.handler.addHandler(obj[0], propName, value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, event.type, evnt]),
         attach(obj: JQuery, propName: string) {
-            obj.on('dblclick', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            obj.on(eventName, this.handler.invoke);
         },
         detach(obj: JQuery, propName: string) {
-            this.handler.removeHandler(obj[0]);
-            obj.off('dblclick', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            this.handler.removeHandler(obj[0], eventName);
+            obj.off(eventName, this.handler.invoke);
         }
     }, {
         name: /^(blur)$/,
@@ -173,15 +179,17 @@ export const jQueryIntegration = [{
             return this.handler.getHandler(obj[0]);
         },
         setter(obj: JQuery, propName: string, value) {
-            this.handler.addHandler(obj[0], value);
+            this.handler.addHandler(obj[0], propName, value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, event.type, evnt]),
         attach(obj: JQuery, propName: string) {
-            obj.on('blur', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            obj.on(eventName, this.handler.invoke);
         },
         detach(obj: JQuery, propName: string) {
-            this.handler.removeHandler(obj[0]);
-            obj.off('blur', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            this.handler.removeHandler(obj[0], eventName);
+            obj.off(eventName, this.handler.invoke);
         }
     }, {
         name: /^(keydown)$/,
@@ -189,15 +197,17 @@ export const jQueryIntegration = [{
             return this.handler.getHandler(obj[0]);
         },
         setter(obj: JQuery, propName: string, value) {
-            this.handler.addHandler(obj[0], value);
+            this.handler.addHandler(obj[0], propName, value);
         },
-        handler: new MulticastDelegate(evnt => [event.currentTarget, '', evnt]),
+        handler: new MulticastDelegate(evnt => [event.currentTarget, event.type, evnt]),
         attach(obj: JQuery, propName: string) {
-            obj.on('keydown', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            obj.on(eventName, this.handler.invoke);
         },
         detach(obj: JQuery, propName: string) {
-            this.handler.removeHandler(obj[0]);
-            obj.off('keydown', this.handler.invoke);
+            const [a, eventName] = this.name.exec(propName);
+            this.handler.removeHandler(obj[0], eventName);
+            obj.off(eventName, this.handler.invoke);
         }
     }]
 }];
