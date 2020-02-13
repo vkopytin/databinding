@@ -342,8 +342,8 @@ namespace utils {
 
     export function uuId() { // Public Domain/MIT
         let d = new Date().getTime();
-        if (typeof window.performance !== 'undefined' && typeof window.performance.now === 'function') {
-            d += window.performance.now(); // use high-precision timer if available
+        if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+            d += performance.now(); // use high-precision timer if available
         }
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
             // tslint:disable-next-line
@@ -352,6 +352,53 @@ namespace utils {
             // tslint:disable-next-line
             return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
+    }
+
+    export function className(str: string, ...args) {
+        str = str || '';
+        const classArray = str.split(/\s+/gi);
+        const res = reduce(classArray, (res, val) => {
+            if (val.indexOf('?') !== 0) {
+                return [...res, val];
+            }
+            if (args.shift()) {
+
+                return [...res, val.replace(/^\?/, '')];
+            }
+
+            return res;
+        }, []);
+
+        return res.join(' ');
+    }
+
+    function getTag(value) {
+        if (value == null) {
+            return value === undefined ? '[object Undefined]' : '[object Null]'
+        }
+        return toString.call(value)
+    }
+
+    function isPlainObject(value) {
+        if (!(typeof value === 'object' && value !== null) || getTag(value) != '[object Object]') {
+          return false
+        }
+        if (Object.getPrototypeOf(value) === null) {
+          return true
+        }
+        let proto = value
+        while (Object.getPrototypeOf(proto) !== null) {
+          proto = Object.getPrototypeOf(proto)
+        }
+        return Object.getPrototypeOf(value) === proto
+      }
+
+    export function isElement(value) {
+        return typeof value === 'object' && value !== null && value.nodeType === 1 && !isPlainObject(value)
+    }
+
+    export function toLower(str: string) {
+        return (str || '').toLocaleLowerCase();
     }
 
 };

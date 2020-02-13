@@ -3,7 +3,9 @@ import { MulticastDelegate } from 'databindjs';
 
 
 export const jQueryIntegration = [{
-    type: $,
+    matches(obj) {
+        return obj instanceof $;
+    },
     isEqual(left, right) {
         return left[0] === right[0];
     },

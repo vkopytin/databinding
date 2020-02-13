@@ -3,7 +3,9 @@ import * as utils from '../../utils';
 
 
 const jsIntegration = [{
-    type: Object,
+    matches(obj) {
+        return obj instanceof Object;
+    },
     isEqual(left, right) {
         return left === right;
     },

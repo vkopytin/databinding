@@ -5,7 +5,7 @@ import * as utils from '../../utils';
 
 
 interface ITypeDescriptors {
-    type: any;
+    matches(obj): boolean;
     properties: Array<{
         name: RegExp;
         getter(obj, name: string): any;

@@ -3,7 +3,9 @@ import { utils } from 'databindjs';
 
 
 export const backboneIntegration = [{
-    type: BB.Collection,
+    matches(obj) {
+        return obj instanceof BB.Collection;
+    },
     isEqual(left, right) {
         return left === right;
     },
@@ -18,7 +20,7 @@ export const backboneIntegration = [{
         setter(obj: BB.Collection, name: string, value) {
             throw new Error(`This is read only property ${name}`);
         },
-        handler: { },
+        handler: {},
         attach(obj: BB.Collection, propName: string, handler) {
             const callback = function (this: BB.Collection, collection: BB.Collection, options) {
                 handler(this, 'length');
@@ -44,7 +46,7 @@ export const backboneIntegration = [{
             }
             return obj[name] = value;
         },
-        handler: { },
+        handler: {},
         attach(obj: BB.Collection, propName: string, handler) {
             const callback = function (this: BB.Collection<BB.Model>, evnt, obj, model, options) {
                 handler(this, propName);
@@ -58,7 +60,9 @@ export const backboneIntegration = [{
         }
     }]
 }, {
-    type: BB.View,
+    matches(obj) {
+        return obj instanceof BB.View;
+    },
     isEqual(left, right) {
         return left === right;
     },
@@ -72,7 +76,7 @@ export const backboneIntegration = [{
             throw new Error('Deleagete is readonly property');
         },
         handler: {},
-        attach(obj: { on; off;}, propName: string, handler) {
+        attach(obj: { on; off; }, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
                 const callback = () => handler(obj, propName);
                 obj.on('change:' + propName, callback);
@@ -95,7 +99,7 @@ export const backboneIntegration = [{
             obj[`set${name}`](value);
         },
         handler: {},
-        attach(obj: { on; off;}, propName: string, handler) {
+        attach(obj: { on; off; }, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
                 const callback = () => handler(obj, propName);
                 obj.on('change:' + propName, callback);
@@ -121,7 +125,7 @@ export const backboneIntegration = [{
             throw new Error(`This is read only property ${name}`);
         },
         handler: {},
-        attach(obj: { on; off;}, propName: string, handler) {
+        attach(obj: { on; off; }, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
                 const callback = () => handler(obj, propName);
                 obj.on('change:' + propName, callback);
@@ -146,7 +150,7 @@ export const backboneIntegration = [{
             obj[fnName](fnValue);
         },
         handler: {},
-        attach(obj: { on; off;}, propName: string, handler) {
+        attach(obj: { on; off; }, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
                 const callback = () => handler(obj, propName);
                 obj.on('change:' + propName, callback);
@@ -178,7 +182,7 @@ export const backboneIntegration = [{
             return obj[name] = value;
         },
         handler: {},
-        attach(obj: { on; off;}, propName: string, handler) {
+        attach(obj: { on; off; }, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
                 const callback = () => handler(obj, propName);
                 obj.on('change:' + propName, callback);
@@ -193,7 +197,9 @@ export const backboneIntegration = [{
         }
     }]
 }, {
-    type: BB.Model,
+    matches(obj) {
+        return obj instanceof BB.Model;
+    },
     isEqual(left, right) {
         return left === right;
     },

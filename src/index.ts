@@ -1,8 +1,10 @@
 import { useIntegration } from 'databindjs';
+import { htmlWithReactIntegration } from './examples/htmlWithReact.integration';
 import { jQueryIntegration } from './examples/jquery.integration';
 import { backboneIntegration } from './examples/backbone.integration';
 
 
+useIntegration(htmlWithReactIntegration);
 useIntegration(jQueryIntegration);
 useIntegration(backboneIntegration);
 

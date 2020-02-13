@@ -48,7 +48,7 @@ interface IPropertyInfo {
 }
 
 interface ITypeInfo {
-    type: any;
+    matches(obj): boolean;
     getProperty(name: string): IPropertyInfo;
     isEqual(left: any, right: any): boolean;
 }
@@ -89,7 +89,7 @@ const valueFilters = {
 }
 
 const getTypeInfo = (obj): ITypeInfo => {
-    const typeDescriptor = utils.find(typeDescriptors, td => obj instanceof td.type);
+    const typeDescriptor = utils.find(typeDescriptors, td => td.matches(obj));
 
     return {
         ...typeDescriptor,

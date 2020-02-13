@@ -161,5 +161,18 @@ describe('tools async Queue', () => {
             done();
         });
     });
+
+    it('className should return classes according to match pattern', () => {
+        expect(utils.className('test')).toEqual('test');
+        expect(utils.className('one two three', true)).toEqual('one two three');
+        expect(utils.className('?one', false)).toEqual('');
+        expect(utils.className('?one', true)).toEqual('one');
+        expect(utils.className('one ?two three')).toEqual('one three');
+        expect(utils.className('one ?two three', false)).toEqual('one three');
+        expect(utils.className('one ?two three', true)).toEqual('one two three');
+        expect(utils.className('one ?two ?three', true, true)).toEqual('one two three');
+        expect(utils.className('one ?two ?three', true, false)).toEqual('one two');
+
+    });
     
 });
