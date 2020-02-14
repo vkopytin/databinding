@@ -6,7 +6,7 @@ import './sass/theme-ios.scss';
 
 
 class App {
-    mainView = null;
+    mainView = null as MainView;
 
     constructor() {
         setTimeout(() => this.initialize());
@@ -21,7 +21,7 @@ class App {
         window.addEventListener('hashchange', (evnt) => this.switchLocation(evnt));
     }
     switchLocation(evnt) {
-        this.mainView.activeFilter(window.location.hash.replace(/^#\//, ''));
+        this.mainView.prop('activeFilter', window.location.hash.replace(/^#\//, '') as any);
     }
 }
 

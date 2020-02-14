@@ -6,8 +6,8 @@ import { TodoService } from '../models/todos';
 class MainViewModel extends Events {
     todoTitle = '';
     iItems = [] as TodoItem[];
-    varFilterBy = '/';
-    varFilterItems = (i) => true;
+    varFilterBy = window.location.hash.replace(/^#\//, '');
+    varFilterItems = this.newFilterFn(this.varFilterBy);
     createNewItemCommand = {
         exec: () => this.createNewItem()
     };
@@ -40,6 +40,17 @@ class MainViewModel extends Events {
             this.trigger('change:newTodoTitle');
         }
         return this.todoTitle;
+    }
+
+    newFilterFn(val: string) {
+        switch (val) {
+            case 'active':
+                return (i: TodoItem) => !i.completed();
+            case 'completed':
+                return (i: TodoItem) => i.completed();
+            default:
+                return (i: TodoItem) => true;
+        }
     }
 
     items(value?: any[]) {
@@ -81,17 +92,11 @@ class MainViewModel extends Events {
         if (arguments.length && val !== this.varFilterBy) {
             this.varFilterBy = val;
             this.trigger('change:filterBy');
-            switch (val) {
-                case 'active':
-                    this.filterItems(i => !i.completed());
-                    break;
-                case 'completed':
-                    this.filterItems(i => i.completed());
-                    break;
-                default:
-                    this.filterItems(i => true);
-            }
+
+            const filterFn = this.newFilterFn(val);
+            this.filterItems(filterFn);
         }
+
         return this.varFilterBy;
     }
 

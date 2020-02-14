@@ -16,7 +16,7 @@ class TodoListView extends withEvents(Component)<any, any> {
 
     filter(fn?) {
         if (arguments.length && fn !== this.state.filterFn) {
-            this.setState({
+            this.setState(this.state = {
                 ...this.state,
                 filterFn: fn
             }, () => {
@@ -28,7 +28,7 @@ class TodoListView extends withEvents(Component)<any, any> {
 
     items(value?: any[]) {
         if (arguments.length && value !== this.state.items) {
-            this.setState({
+            this.setState(this.state = {
                 ...this.state,
                 items: value
             }, () => {

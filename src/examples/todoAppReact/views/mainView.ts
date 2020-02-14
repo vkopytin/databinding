@@ -8,11 +8,10 @@ import { TodoListView } from '../views/todoListView';
 
 
 class MainView extends withEvents(Component)<any, any> {
-    ref = createRef();
+    ref = createRef<HTMLElement>();
     createNewItem = null as { exec(); };
     markAllCompletedCommand = null as { exec(); };
     clearCompletedCommand = null as { exec(); };
-    todoFilter = '/';
     itemsListView: TodoListView = null;
     state = {
         total: 0,
@@ -20,7 +19,10 @@ class MainView extends withEvents(Component)<any, any> {
         hasTodos: false,
         toggleAllActive: false,
         manyTasks: false,
-        newTodoTitle: ''
+        newTodoTitle: '',
+        totalText: '0',
+        showClearCompleted: false,
+        activeFilter: this.props['activeFilter'] as 'active' | 'completed' | ''
     };
 
     binding = bindTo(this, () => new MainViewModel(), {
@@ -30,11 +32,11 @@ class MainView extends withEvents(Component)<any, any> {
         '-prop(todoCount)': 'remaining.length',
         '-prop(showClearCompleted)': 'completed.length|not',
         '-prop(manyTasks)': 'remaining.1|bool',
-//        'prop(newTodoTitle)': 'newTodoTitle',
+        'prop(newTodoTitle)': 'newTodoTitle',
         'itemsListView.items': 'items',
         'itemsListView.filter': 'filterItems',
         '-createNewItem': 'createNewItemCommand',
-        'activeFilter': 'filterBy',
+        'prop(activeFilter)': 'filterBy',
         '-markAllCompletedCommand': 'markAllCompletedCommand',
         '-clearCompletedCommand': 'clearCompletedCommand'
     });
@@ -56,23 +58,13 @@ class MainView extends withEvents(Component)<any, any> {
         unbindFrom(this.binding);
     }
 
-    prop<T extends MainView['state'], K extends keyof T>(propName, val?): T[K] {
+    prop<K extends keyof MainView['state']>(propName: K, val?: MainView['state'][K]): MainView['state'][K] {
         if (arguments.length > 1) {
             this.state[propName] = val;
             this.trigger('change:prop(' + propName + ')');
         }
+
         return this.state[propName];
-    }
-
-    activeFilter(val?) {
-        if (arguments.length && val !== this.todoFilter) {
-            this.todoFilter = val;
-            $(this.ref.current).find('.filters a').toggleClass('active', false);
-            $(this.ref.current).find(`.filters a[href='#/${val}']`).toggleClass('active', true);
-            this.trigger('change:activeFilter');
-        }
-
-        return this.todoFilter;
     }
 
     onKeypress(evnt) {
@@ -82,6 +74,7 @@ class MainView extends withEvents(Component)<any, any> {
     }
 
     render() {
+
         return template(this, this.ref);
     }
 }

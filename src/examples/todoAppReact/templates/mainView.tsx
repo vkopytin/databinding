@@ -41,17 +41,17 @@ export const template = (view: MainView, ref) => <main ref={ref}>
                 onClick={e => view.clearCompletedCommand.exec()}
             >Clear completed</button>
             <div className="filters segmented-control">
-                <a className="control-item active" href="#/">All</a>
-                <a className="control-item" href="#/active">Active</a>
-                <a className="control-item" href="#/completed">Completed</a>
+                <a className={cn("control-item ?active", !view.prop('activeFilter'))} href="#/">All</a>
+                <a className={cn("control-item ?active", view.prop('activeFilter') === 'active')} href="#/active">Active</a>
+                <a className={cn("control-item ?active", view.prop('activeFilter') === 'completed')} href="#/completed">Completed</a>
             </div>
         </header>
         <section className="bar bar-standard bar-header-secondary">
             <form onSubmit={e => e.preventDefault()}>
                 <input className="new-todo" type="search" placeholder="What needs to be done?"
-                    //value={view.prop('newTodoTitle')}
-                    //onChange={e => view.prop('newTodoTitle', e.target['value'])}
-                    {...dataBind(view.binding, "newTodo{val=newTodoTitle}")}
+                    value={view.prop('newTodoTitle')}
+                    onChange={e => view.prop('newTodoTitle', e.target['value'])}
+                    //{...dataBind(view.binding, "newTodo{val=newTodoTitle}")}
                     onKeyPress={e => view.onKeypress(e)}
                 />
             </form>
