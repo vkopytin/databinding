@@ -3,7 +3,7 @@ Databinding in javascript
 
 `$yarn add databindjs` or `$npm install databindjs`
 
-How it is expected to integrate (Example: https://jsfiddle.net/rsjpa0o8/4/)
+How it is expected to integrate (Example: https://jsfiddle.net/rsjpa0o8/5/)
 ```javascript
 import { bindTo, unbindFrom, updateLayout } from 'databindjs';
 
