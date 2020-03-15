@@ -1,6 +1,6 @@
 {
   "name": "databindjs",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Two way data binding in javascript",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

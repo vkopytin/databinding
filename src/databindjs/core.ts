@@ -171,7 +171,7 @@ const createNewStateItem = (rootItem, item, propName, aId: string) => {
     return [{}, item, ti, value, makeEventHandler(rootItem), [], aId];
 }
 
-const makeEventHandler = (rootItem) => (obj, propName: string) => {
+const makeEventHandler = (rootItem) => (obj, propName: string, ...args) => {
     queue.push((next, opId) => {
         const newState = dispatchTo(rootItem, rootItem.state, {
             item: obj,
@@ -180,7 +180,7 @@ const makeEventHandler = (rootItem) => (obj, propName: string) => {
         });
         if (newState !== rootItem.state) {
             rootItem.state = newState;
-            rootItem.events.trigger('change');
+            rootItem.events.trigger('change', ...args);
         }
         next();
     });

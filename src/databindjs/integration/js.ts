@@ -21,7 +21,7 @@ const jsIntegration = [{
         handler: { general: () => { } },
         attach(obj, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
-                const callback = () => handler(obj, propName);
+                const callback = (...args) => handler(obj, propName, ...args);
                 obj.on('change:' + propName, callback);
 
                 return callback;
@@ -64,7 +64,7 @@ const jsIntegration = [{
         handler: {},
         attach(obj: { on; off; }, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
-                const callback = () => handler(obj, propName);
+                const callback = (...args) => handler(obj, propName, ...args);
                 obj.on('change:' + propName, callback);
 
                 return callback;
@@ -89,7 +89,7 @@ const jsIntegration = [{
         handler: {},
         attach(obj: { on; off; }, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
-                const callback = () => handler(obj, propName);
+                const callback = (...args) => handler(obj, propName, ...args);
                 obj.on('change:' + propName, callback);
 
                 return callback;
@@ -121,7 +121,7 @@ const jsIntegration = [{
         handler: {},
         attach(obj: { on; off; }, propName: string, handler) {
             if ('on' in obj && 'off' in obj) {
-                const callback = () => handler(obj, propName);
+                const callback = (...args) => handler(obj, propName, ...args);
                 obj.on('change:' + propName, callback);
 
                 return callback;
