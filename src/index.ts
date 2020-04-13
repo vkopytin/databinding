@@ -14,6 +14,8 @@ if (/[\?&]contacts[=&]/.test('' + window.location)) {
     require('./examples/todoApp');
 } else if (/[\?&]todo=r&?/.test('' + window.location)) {
     require('./examples/todoAppReact');
-} else {
+} else if (/[\?&]todo=js&?/.test('' + window.location)) {
     require('./examples/todoAppWithJQuery');
+} else {
+    require('./examples/databinding-js');
 }
