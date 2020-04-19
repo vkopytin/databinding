@@ -10,7 +10,10 @@ class MainViewModel extends Base<MainViewModel['state']> {
         items: [] as TodoViewModelItem[]
     }
     createNewItemCommand = { exec: () => this.createNewItem() };
-    markAllCompleteCommand = { exec: () => this.markAllComplete() };
+    toggleAllCompleteCommand = {
+        canExecute: () => !this.areAllComplete(),
+        exec: () => this.toggleAllCompleteCommand.canExecute() && this.markAllComplete()
+    };
     offChangeItems;
 
     constructor() {
@@ -41,6 +44,13 @@ class MainViewModel extends Base<MainViewModel['state']> {
 
     markAllComplete() {
         utils.map(this.prop('items'), m => m.complete(true));
+    }
+    
+    areAllComplete() {
+        if (!this.prop('items').length) {
+            return false;
+        }
+        return !utils.find(this.prop('items'), i => !i.getIsComplete());
     }
 }
 

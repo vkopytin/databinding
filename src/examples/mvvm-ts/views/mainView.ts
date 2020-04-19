@@ -42,7 +42,10 @@ class MainView extends Base {
     offFilter;
 
     createNewItemCommand = { exec() { return; } };
-    toggleAllCompleteCommand = { exec() { return; } };
+    toggleAllCompleteCommand = {
+        canExecute() { return false; },
+        exec() { return; }
+    };
 
     constructor(public config: ReturnType<MainView['initOptions']>) {
         super('change:items');
@@ -90,7 +93,7 @@ class MainView extends Base {
     setViewModel() {
         this.unbind();
         this.setFilter('all');
-        this.setAllComplete(this.areAllComplete());
+        this.setAllComplete(this.toggleAllCompleteCommand.canExecute());
         this.bind();
     }
 
@@ -113,7 +116,7 @@ class MainView extends Base {
 
         this.offOnKeypress = utils.on(this.el, '.new-title', 'keypress', evnt => this.onKeypress(evnt));
         this.offMarkAllComplete = utils.on(this.el, '.complete-all', 'change', () => this.getAllComplete() && this.toggleAllCompleteCommand.exec());
-        this.offChangeItems = this.todoList.on('change:items', () => this.setAllComplete(this.areAllComplete()));
+        this.offChangeItems = this.todoList.on('change:items', () => this.setAllComplete(!this.toggleAllCompleteCommand.canExecute()));
         this.offFilter = utils.on(this.el, '.filter input', 'click', () => this.filterItems(this.getFilter()));
 
         this.setViewModel();
@@ -122,7 +125,7 @@ class MainView extends Base {
     bind() {
         this.unbind();
         this.createNewItemCommand = this.vm.createNewItemCommand;
-        this.toggleAllCompleteCommand = this.vm.markAllCompleteCommand;
+        this.toggleAllCompleteCommand = this.vm.toggleAllCompleteCommand;
         this.offTitleToModel = utils.on(this.el, '.new-title', 'input', () => this.vm.prop('title', this.getTitle()));
         this.offTitleFromModel = this.vm.on('change:title', () => this.setTitle(this.vm.prop('title')));
         this.offItemsFromModel = this.vm.on('change:items', () => this.todoList.prop('items', this.vm.prop('items')));
@@ -130,7 +133,7 @@ class MainView extends Base {
 
     unbind() {
         this.createNewItemCommand = { exec() { return; } };
-        this.toggleAllCompleteCommand = { exec() { return; } };
+        this.toggleAllCompleteCommand = { canExecute() { return false; }, exec() { return; } };
         utils.getResult(this, () => this.offTitleToModel);
         utils.getResult(this, () => this.offTitleFromModel);
         utils.getResult(this, () => this.offItemsFromModel);
@@ -140,13 +143,6 @@ class MainView extends Base {
         if (evnt.which === ENTER_KEY && ('' + this.newTitle.value).trim()) {
             this.createNewItemCommand.exec();
         }
-    }
-
-    areAllComplete() {
-        if (!this.todoList || !this.todoList.prop('items').length) {
-            return false;
-        }
-        return !utils.find(this.vm.prop('items'), i => !i.getIsComplete());
     }
 
     filterItems(filterName: 'all' | 'active' | 'completed') {
