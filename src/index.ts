@@ -16,6 +16,8 @@ if (/[\?&]contacts[=&]/.test('' + window.location)) {
     require('./examples/todoAppReact');
 } else if (/[\?&]todo=js&?/.test('' + window.location)) {
     require('./examples/todoAppWithJQuery');
-} else {
+} else if (/[\?&]databind=js&?/.test('' + window.location)) {
     require('./examples/databinding-js');
+} else {
+    require('./examples/mvvm-ts');
 }
