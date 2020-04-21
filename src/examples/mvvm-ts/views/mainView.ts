@@ -148,9 +148,9 @@ class MainView extends Base {
     filterItems(filterName: 'all' | 'active' | 'completed') {
         switch (filterName) {
             case 'active':
-                return this.todoList.setFilter(i => i.getIsComplete());
-            case 'completed':
                 return this.todoList.setFilter(i => !i.getIsComplete());
+            case 'completed':
+                return this.todoList.setFilter(i => i.getIsComplete());
             default:
                 return this.todoList.setFilter(null);
         }
