@@ -36,9 +36,10 @@ class MainViewModel extends Base<MainViewModel['state']> {
         this.prop('items', utils.map(todos.getItems(), item => new TodoViewModelItem(item)));
     }
 
-    createNewItem() {
+    async createNewItem() {
         const model = TodosModel.instance();
-        model.createTodo(this.prop('title'));
+        await model.createTodo(this.prop('title'));
+        model.fetch();
         this.prop('title', '');
     }
 

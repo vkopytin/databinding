@@ -35,21 +35,18 @@ class TodosModel extends Base {
         this.setItems(items);
     }
 
-    async createTodo(title) {
-        const result = await this.adapter.createTodo(title);
-        await this.fetch();
+    createTodo(title) {
+        return this.adapter.createTodo(title);
     }
 
-    async updateTodo(item: ITodoItem) {
+    updateTodo(item: ITodoItem) {
         const { id, ...attrs } = item;
-        const result = await this.adapter.updateTodo(id, attrs);
-        await this.fetch();
+        return this.adapter.updateTodo(id, attrs);
     }
 
-    async deleteTodo(item: ITodoItem) {
+    deleteTodo(item: ITodoItem) {
         const { id } = item;
-        const result = await this.adapter.deleteTodo(id);
-        await this.fetch();
+        return this.adapter.deleteTodo(id);
     }
 }
 

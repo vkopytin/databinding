@@ -23,25 +23,28 @@ class TodoViewModelItem {
         return this.item.complete;
     }
 
-    updateTitle(title) {
+    async updateTitle(title) {
         const todosModel = TodosModel.instance();
-        todosModel.updateTodo({
+        await todosModel.updateTodo({
             ...this.item,
             title: title
         });
+        todosModel.fetch();
     }
 
-    complete(isComplete) {
+    async complete(isComplete) {
         const todosModel = TodosModel.instance();
-        todosModel.updateTodo({
+        await todosModel.updateTodo({
             ...this.item,
             complete: isComplete
         });
+        todosModel.fetch();
     }
 
-    remove() {
+    async remove() {
         const todosModel = TodosModel.instance();
-        todosModel.deleteTodo(this.item);
+        await todosModel.deleteTodo(this.item);
+        todosModel.fetch();
     }
 
 }
