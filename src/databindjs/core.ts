@@ -155,13 +155,43 @@ const detachEvent = (item, itemTi, propName: string, handler: (obj, propName: st
     }
 }
 
+
 //const rxSplitDot = () => /\.(?!(?:[^(]*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$))/g;
 //const rxSplitDot = () => /\.(?<!(?:\(([^()]|\(([^()]|\(([^()]|(([^()])*\))*\))*\))*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$)))/g;
-const splitDeclaration = (d: string) => {
+const splitDeclaration1 = (d: string) => {
     //const rxByDot = /\.(?<!(?:\(([^()]|\(([^()]|\(([^()]|(([^()])*\))*\))*\))*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$)))/g;
     const rxByDot = /\.(?!(?:\(([^()]|\(([^()]|\(([^()]|(([^()])*\))*\))*\))*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$)))/g;
     //const rxByDot = /\.(?!((?:\([^']\)|[^'\(\)]+)+)\))/g;
     return utils.filter(d.split(rxByDot), i => !!i);
+}
+
+function splitDeclaration(input: string) {
+    let nParens = 0;
+    let start = 0;
+    const result = [];
+    for (let i = 0; i < input.length; i++) {
+        switch (input[i]) {
+            case '.':
+                if (nParens == 0) {
+                    result.push(input.substring(start, i));
+                    start = i + 1;
+                }
+                break;
+            case '(':
+                nParens++;
+                break;
+            case ')':
+                nParens--;
+                if (nParens < 0)
+                    throw new Error('Unbalanced parenthesis at offset #' + i);
+                break;
+        }
+    }
+    if (nParens > 0)
+        throw new Error('Missing closing parenthesis');
+    result.push(input.substring(start));
+
+    return result;
 }
 
 const createNewStateItem = (rootItem, item, propName, aId: string) => {
