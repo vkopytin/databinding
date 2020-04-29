@@ -444,7 +444,7 @@ const transferValue = (rootItem, state: IStateRecord, dataBinding: IDataBinding,
                 id: action.id
             });
 
-            if (false && !target.canWrite) {
+            if (!target.canWrite) {
                 queue.push((next, opId) => {
                     if (action.id === opId && target.aId === opId) {
                         return next();
