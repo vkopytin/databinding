@@ -159,7 +159,8 @@ const detachEvent = (item, itemTi, propName: string, handler: (obj, propName: st
 //const rxSplitDot = () => /\.(?<!(?:\(([^()]|\(([^()]|\(([^()]|(([^()])*\))*\))*\))*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$)))/g;
 const splitDeclaration = (d: string) => {
     //const rxByDot = /\.(?<!(?:\(([^()]|\(([^()]|\(([^()]|(([^()])*\))*\))*\))*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$)))/g;
-    const rxByDot = /\.(?!(?:\(([^()]|\(([^()]|\(([^()]|(([^()])*\))*\))*\))*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$)))/g;
+    //const rxByDot = /\.(?!(?:\(([^()]|\(([^()]|\(([^()]|(([^()])*\))*\))*\))*\))|(?:[^\[]*\])|(?!(?:(?:[^']*'){2})*[^']*$)))/g;
+    const rxByDot = /\.(?!((?:\([^']\)|[^'\(\)]+)+)\))/g;
     return utils.filter(d.split(rxByDot), i => !!i);
 }
 
@@ -422,7 +423,7 @@ const transferValue = (rootItem, state: IStateRecord, dataBinding: IDataBinding,
                 canWrite: path.canWrite,
                 aId: res.state[path.propName][6]
             };
-        }, { state: oldState, item: null, itemTi: null, value: null, propName: '', canRead: true, aId: action.id });
+        }, { state: oldState, item: null, itemTi: null, value: null, propName: '', canWrite: true, canRead: true, aId: action.id });
 
         if (!target.item || !source.item) {
 
@@ -442,6 +443,31 @@ const transferValue = (rootItem, state: IStateRecord, dataBinding: IDataBinding,
                 propName: target.propName,
                 id: action.id
             });
+
+            if (!target.canWrite) {
+                queue.push((next, opId) => {
+                    if (action.id === opId && target.aId === opId) {
+                        return next();
+                    }
+                    const newState = syncState(rootItem, rootItem.state, {
+                        item: source.item,
+                        propName: source.propName,
+                        id: action.id
+                    });
+                    if (newState === rootItem.state) {
+                        return next();
+                    }
+                    const updatedState = dispatchTo(rootItem, newState, {
+                        item: source.item,
+                        propName: source.propName,
+                        id: opId
+                    });
+                    if (updatedState !== rootItem.state) {
+                        rootItem.state = updatedState;
+                    }
+                    next();
+                });
+            }
         }
 
         if (newTargetState !== oldState) {

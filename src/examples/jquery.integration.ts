@@ -47,7 +47,7 @@ export const jQueryIntegration = [{
             return callback;
         },
         detach(obj: JQuery, propName: string, callback) {
-            obj.off('all', callback);
+            obj.off('input', callback);
         }
     }, {
         name: /^(\w+\(.*\))$/i,
@@ -118,9 +118,16 @@ export const jQueryIntegration = [{
         setter(obj: JQuery, name, v) {
             return obj.html(v);
         },
-        handler: { general: () => { } },
-        attach(obj, propName: string) { },
-        detach(obj, propName: string) { }
+        handler: {},
+        attach(obj: JQuery, propName: string, handler) {
+            const callback = evnt => handler($(evnt.currentTarget), propName);
+            obj.on('keyup', callback);
+
+            return callback;
+        },
+        detach(obj: JQuery, propName: string, callback) {
+            obj.off('keyup', callback);
+        }
     }, {
         name: /^(keypress)$/,
         getter(obj: JQuery, propName: string) {
