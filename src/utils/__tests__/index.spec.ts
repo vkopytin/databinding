@@ -174,5 +174,21 @@ describe('tools async Queue', () => {
         expect(utils.className('one ?two ?three', true, false)).toEqual('one two');
 
     });
+
+    it('toSync checking', () => {
+        const left1 = null;
+        const right1 = [{ id: 1 }];
+        expect(utils.toSync(left1, right1, (a, b) => a.id !== b.id)).toEqual({ create: [{ id: 1 }], update: [], delete: [] });
+        const left2 = [{ id: 2, name: 'b' }, { id: 1, name: 'a' }];
+        const right2 = [{ id: 1, name: 'aa' }, { id: 2, name: 'bb' }];
+        expect(utils.toSync(left2, right2, (a, b) => a.id !== b.id)).toEqual({ create: [], update: [{ id: 1, name: 'aa' }, { id: 2, name: 'bb' }], delete: [] });
+        const left3 = [{ id: 1, name: 'a' }, { id: 3, name: 'c' }, { id: 2, name: 'b' }];
+        const right3 = [{ id: 1, name: 'aa' }, { id: 4, name: 'dd' }, { id: 2, name: 'bb' }];
+        expect(utils.toSync(left3, right3, (a, b) => a.id !== b.id)).toEqual({
+            create: [{ id: 4, name: 'dd' }],
+            update: [{ id: 1, name: 'aa' }, { id: 2, name: 'bb' }],
+            delete: [{ id: 3, name: 'c' }]
+        });
+    });
     
 });

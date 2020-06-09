@@ -401,6 +401,36 @@ namespace utils {
         return (str || '').toLocaleLowerCase();
     }
 
+    export function diff(baseArray, arrayToCampare, callback = (a, b) => a !== b) {
+        if (!(arrayToCampare instanceof Array)) {
+            return baseArray;
+        }
+        return baseArray.filter(baseEl =>
+            arrayToCampare.every(compareEl => callback(baseEl, compareEl)));
+    }
+    
+    export function intersection(baseArray, arrayToCampare, callback = (a, b) => a !== b) {
+        if (!(arrayToCampare instanceof Array)) {
+            return baseArray;
+        }
+        return baseArray.filter(baseEl =>
+            !arrayToCampare.every(compareEl => callback(baseEl, compareEl)));
+    }
+    
+    export function toSync(oldItems, newItems, compare = (a, b) => a!== b) {
+        oldItems = oldItems ? [].concat(oldItems) : [];
+        newItems = newItems ? [].concat(newItems) : [];
+        const d = diff(oldItems, newItems, compare),
+            u = intersection(newItems, oldItems, compare),
+            c = diff(newItems, u, compare);
+        
+        return {
+            create: c,
+            update: u,
+            delete: d
+        };
+    }
+
 };
 
 export = utils;

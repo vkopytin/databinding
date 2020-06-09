@@ -18,6 +18,8 @@ if (/[\?&]contacts[=&]/.test('' + window.location)) {
     require('./examples/todoAppWithJQuery');
 } else if (/[\?&]databind=js&?/.test('' + window.location)) {
     require('./examples/databinding-js');
-} else {
+} else if (/[\?&]mvvm=js&?/.test('' + window.location)) {
     require('./examples/mvvm-ts');
+} else {
+    require('./examples/editor')
 }
