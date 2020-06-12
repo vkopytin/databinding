@@ -20,6 +20,8 @@ if (/[\?&]contacts[=&]/.test('' + window.location)) {
     require('./examples/databinding-js');
 } else if (/[\?&]mvvm=js&?/.test('' + window.location)) {
     require('./examples/mvvm-ts');
+} else if (/[\?&]reflux[=&]/.test('' + window.location)) {
+    require('./examples/reflux-ts');
 } else {
     require('./examples/editor')
 }
