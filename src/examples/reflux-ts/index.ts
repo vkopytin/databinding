@@ -1,5 +1,5 @@
 import { makeVdom } from './virtualDom';
-import { MainView } from './views/main';
+import { MainView } from './components/main';
 
 
 const $el = document.createElement('div');
