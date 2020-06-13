@@ -32,13 +32,6 @@ export const [MainActions, MainActionTypes, mainReducer] = declareActions({
     }
 });
 
-function merge() { 
-
+export const main = (action, state) => {
+    return [];
 }
-
-const main = (action$, state$) => {
-
-    return merge(
-
-    );
-};

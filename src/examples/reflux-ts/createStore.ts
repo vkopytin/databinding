@@ -1,7 +1,14 @@
-export function createStore(reducer, initialState) {
+export function createStore(reducer, initialState, enhancer = null) {
     const currentReducer = reducer;
     let currentState = initialState;
     const listeners = [];
+
+    if (enhancer) {
+        return enhancer(createStore)(
+            reducer,
+            initialState
+        );
+    }
 
     return {
         getState() {
