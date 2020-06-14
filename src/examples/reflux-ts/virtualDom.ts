@@ -32,6 +32,9 @@ export function el(type, attrs = {}, ...children) {
 export function makeVdom(oldDom) {
 
     function createElement(node) {
+        if (node === undefined) {
+            return document.createTextNode('');
+        }
         if (typeof node === 'string') {
             return document.createTextNode(node);
         }

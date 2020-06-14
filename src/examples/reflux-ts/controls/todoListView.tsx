@@ -17,6 +17,6 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export const SubView = connect(mapStateToProps, mapDispatchToProps)(({ items = [] }) => <ul>
+export const TodoListView = connect(mapStateToProps, mapDispatchToProps)(({ items = [] }) => <ul>
     {items.map(item => el('li', {}, '' + item))}
 </ul>);

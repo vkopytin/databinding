@@ -1,8 +1,7 @@
 import { main } from './main';
+import { merge } from '../itrx';
 
 
-export const rootEffect = (action, state) => {
-    return [].concat(
-        main(action, state)
-    );
-};
+export const rootEffect = (action$, state$) => merge(
+    main(action$, state$)
+);
