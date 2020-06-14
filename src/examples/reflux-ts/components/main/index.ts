@@ -22,6 +22,24 @@ export const [MainActions, MainActionTypes, mainReducer] = declareActions({
             };
         }
     },
+    UPDATE_NEW_TODO_TITLE: {
+        updateNewTodoTitle: (type, payload) => ({ type, payload }),
+        reducer: (state: {} = {}, { type, payload }) => {
+            return {
+                ...state,
+                newTodoTitle: payload
+            };
+        }
+    },
+    CREATE_NEW_ITEM: {
+        createNewItem: (type, payload) => ({ type, payload }),
+        reducer: (state: any = {}, { type, payload }) => {
+            return {
+                ...state,
+                items: [...state.items, payload]
+            };
+        }
+    },
     UPDATE_VALUE: {
         updateValue: (type, payload) => ({ type, payload }),
         reducer: (state: {} = {}, { type, payload }) => {
@@ -73,6 +91,11 @@ export const main = (action$, state$) => {
                 exec() {
                     action$.next(MainActions.updateValue(23));
                 }
+            },
+            updateNewTodoTitleCommand: (title) => action$.next(MainActions.updateNewTodoTitle(title)),
+            createNewItemCommand: () => {
+                action$.next(MainActions.createNewItem(state$.value.newTodoTitle));
+                action$.next(MainActions.updateNewTodoTitle(''));
             }
         }))
     );

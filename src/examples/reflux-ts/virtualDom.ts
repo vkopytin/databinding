@@ -1,9 +1,12 @@
 import { dom } from './dom';
 
 
-const EVENT_NAMES = {
+export const EVENT_NAMES = {
     onClick: 'click',
-    onInput: 'input'
+    onInput: 'input',
+    onKeyPress: 'keypress',
+    onChange: 'change',
+    onSubmit: 'submit'
 };
 
 function arrayMerge(array1, array2) {
@@ -17,7 +20,7 @@ function arrayMerge(array1, array2) {
 }
 
 export function el(type, attrs = {}, ...children) {
-    children = [].concat(...children);
+    children = [].concat(...children).filter(a => a !== undefined);
     if (typeof type === 'function') {
         return type({ ...attrs, render() { } }, children);
     }

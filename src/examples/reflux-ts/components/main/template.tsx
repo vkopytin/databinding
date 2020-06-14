@@ -6,10 +6,17 @@ import { TodoListView } from '../../controls/todoListView';
 import { MainActions } from '.';
 
 
+const ENTER_KEY = 13;
+
 function mapStateToProps(state, props) {
     const newState = {
         ...props,
-        ...state
+        ...state,
+        onKeypress(evnt) {
+            if (evnt.which === ENTER_KEY) {
+                newState.createNewItemCommand();
+            }
+        }
     };
     return newState;
 }
@@ -53,7 +60,7 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
             <form onSubmit={e => e.preventDefault()}>
                 <input className="new-todo" type="search" placeholder="What needs to be done?"
                     value={props.newTodoTitle}
-                    onChange={e => props.newTodoTitle = e.target['value']}
+                    onInput={e => props.updateNewTodoTitleCommand(e.target['value'])}
                     onKeyPress={e => props.onKeypress(e)}
                 />
             </form>

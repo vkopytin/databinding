@@ -1,3 +1,6 @@
+import { EVENT_NAMES } from './virtualDom';
+
+
 const dom = {
     eventHandlers: [],
     closest(el, selector) {
@@ -46,10 +49,9 @@ const dom = {
         const el = document.createElement(type);
         const attrNames = Object.keys(attrs);
         attrNames.forEach(attrName => {
-            if (attrName === 'onClick') {
-                dom.attach(el, '', 'click', attrs[attrName]);
-            } else if (attrName === 'onInput') {
-                dom.attach(el, '', 'input', attrs[attrName]);
+            if (attrName in EVENT_NAMES) {
+                const eventName = EVENT_NAMES[attrName];
+                dom.attach(el, '', eventName, attrs[attrName]);
             } else if (attrName in el) {
                 el[attrName] = attrs[attrName];
             } else {
