@@ -1,7 +1,11 @@
 export { MainView } from './template';
 import { declareActions } from '../../declareActions';
-import { it, merge, from, map, ofType, filter, pipe, op } from '../../itrx';
+import { map, ofType, pipe, mergeIt, union, unionIt, mapIt } from '../../itrx';
+import { ToDoActions, changeItems, queryItems, queryTodos, selectTodos } from '../../models/todos';
 
+
+export const selectItems = ({ items = [] }) => items;
+export const selectNewTodoTitle = ({ newTodoTitle = '' }) => newTodoTitle;
 
 export const [MainActions, MainActionTypes, mainReducer] = declareActions({
     UPDATE_COMMANDS: {
@@ -33,10 +37,10 @@ export const [MainActions, MainActionTypes, mainReducer] = declareActions({
     },
     CREATE_NEW_ITEM: {
         createNewItem: (type, payload) => ({ type, payload }),
-        reducer: (state: any = {}, { type, payload }) => {
+        reducer: (state: any = { }, { type, payload }) => {
             return {
                 ...state,
-                items: [...state.items, payload]
+                items: [...selectItems(state), payload]
             };
         }
     },
@@ -79,27 +83,44 @@ const initActions = [
     })
 ];
 
+export const selectMain = ({ main = {} }) => main;
+
 export const main = (action$, state$) => {
-    const test$ = pipe(action$,
-        op.ofType(MainActionTypes.UPDATE_VALUE),
-        op.map(a => ({ type: 'test' }))
-    );
-    const init$ = pipe(action$,
-        op.ofType('@INIT'),
-        op.map(() => MainActions.updateCommands({
-            markAllCompletedCommand: {
-                exec() {
-                    action$.next(MainActions.updateValue(23));
+    const test$ = pipe(
+        ofType(MainActionTypes.UPDATE_VALUE),
+        map(a => ({ type: 'test' }))
+    )(action$);
+
+    const init$ = pipe(
+        ofType('@INIT'),
+        map(() => [
+            MainActions.updateCommands({
+                markAllCompletedCommand: {
+                    exec() {
+                        action$.next(MainActions.updateValue(23));
+                    }
+                },
+                updateNewTodoTitleCommand: (title) => action$.next(MainActions.updateNewTodoTitle(title)),
+                createNewItemCommand: () => {
+                    action$.next(MainActions.createNewItem(selectNewTodoTitle(selectMain(state$.value))));
+                    action$.next(MainActions.updateNewTodoTitle(''));
                 }
-            },
-            updateNewTodoTitleCommand: (title) => action$.next(MainActions.updateNewTodoTitle(title)),
-            createNewItemCommand: () => {
-                action$.next(MainActions.createNewItem(state$.value.newTodoTitle));
-                action$.next(MainActions.updateNewTodoTitle(''));
-            }
-        }))
-    );
-    return merge(
+            }),
+            ToDoActions.fetchItems()
+        ])
+    )(action$);
+
+    const changeTodo$ = pipe(
+        changeItems,
+        union(mapIt(state$, selectTodos)),
+        map(items => {
+            console.log(items);
+            return [];
+        })
+    )(action$);
+
+    return mergeIt(
+        changeTodo$,
         init$,
         test$
     );

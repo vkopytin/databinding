@@ -1,7 +1,7 @@
 import { createStore } from './createStore';
 import { reducer } from './reducers';
 import { rootEffect } from './components';
-import itrx = require('./itrx');
+import { it } from './itrx';
 
 
 export default function compose(...funcs: Function[]) {
@@ -39,25 +39,23 @@ export function applyMiddleware(...middlewares) {
 
 function effectsMiddleware(store) {
 
-    const inputSeq = itrx.it(function* () {
+    const inputSeq = it(function* () {
         while (true) {
-            const action = yield;
-            console.log(action);
-            if (action) {
-                setTimeout(() => store.dispatch(action));
+            const actions = [].concat(yield);
+            console.log(actions);
+            if (actions) {
+                setTimeout(() => actions.map(action => store.dispatch(action)));
             }
         }
     });
-    let action$ = itrx.it((function* () { yield }))();
-    const state$ = (function* () {
+    let action$ = it((function* () { yield }))();
+    const state$ = it(function* (lastValue) {
         while (true) {
-            state$['value'] = yield;
+            yield store.getState();
         }
-    })();
-    state$.next(store.getState());
+    })(store.getState());
 
     setTimeout(() => {
-        //action$ = itrx.merge(itrx.map(inputSeq(), action => ({ type: 'test' })));
         action$ = rootEffect(inputSeq(), state$);
         store.dispatch({ type: '@INIT' });
     });
@@ -66,22 +64,24 @@ function effectsMiddleware(store) {
 
         return function (action) {
             const ret = dispatch(action);
-
             action$.next(action);
-            state$.next(store.getState());
-
-            //const actions = rootEffect(action, store.getState());
-            //actions.forEach(action => {
-            //    if (action) {
-            //        dispatch(action);
-            //    }
-            //});
 
             return ret;
         };
     };
 }
 
+const createThunkMiddleware = (extraArgument?) => ({ dispatch, getState }) => next => action => {
+    if (typeof action === 'function') {
+        return action(dispatch, getState, extraArgument);
+    }
+
+    return next(action);
+};
+  
+var thunk = createThunkMiddleware();
+  
 export const store = createStore(reducer, { items: [], itemName: '' }, applyMiddleware(
+    thunk,
     effectsMiddleware
 ));

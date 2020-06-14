@@ -1,7 +1,9 @@
 import { main } from './main';
-import { merge } from '../itrx';
+import { mergeIt } from '../itrx';
 
 
-export const rootEffect = (action$, state$) => merge(
+
+
+export const rootEffect = (action$, state$) => mergeIt(
     main(action$, state$)
 );

@@ -3,7 +3,7 @@ import { el } from '../../virtualDom';
 import { connect } from '../../connect';
 import { className as cn } from '../../utils';
 import { TodoListView } from '../../controls/todoListView';
-import { MainActions } from '.';
+import { MainActions, selectMain } from '.';
 
 
 const ENTER_KEY = 13;
@@ -11,7 +11,7 @@ const ENTER_KEY = 13;
 function mapStateToProps(state, props) {
     const newState = {
         ...props,
-        ...state,
+        ...selectMain(state),
         onKeypress(evnt) {
             if (evnt.which === ENTER_KEY) {
                 newState.createNewItemCommand();
@@ -77,7 +77,7 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
             </span>
         </footer>
         <section className={cn('content ?hidden', props.hasTodos)}>
-            <TodoListView />
+            <TodoListView items={props.items} />
             <footer className="info content-padded">
                 <p>Double-click to edit a todo</p>
                 <p>Written by <a href="https://github.com/addyosmani">Addy Osmani</a></p>
