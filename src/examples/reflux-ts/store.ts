@@ -1,7 +1,6 @@
 import { createStore } from './createStore';
 import { reducer } from './reducers';
 import { rootEffect } from './components';
-import { it } from './itrx';
 
 
 export default function compose(...funcs: Function[]) {
@@ -39,32 +38,21 @@ export function applyMiddleware(...middlewares) {
 
 function effectsMiddleware(store) {
 
-    const inputSeq = it(function* () {
-        while (true) {
-            const actions = [].concat(yield);
-            console.log(actions);
-            if (actions) {
-                setTimeout(() => actions.map(action => store.dispatch(action)));
-            }
-        }
-    });
-    let action$ = it((function* () { yield }))();
-    const state$ = it(function* (lastValue) {
-        while (true) {
-            yield store.getState();
-        }
-    })(store.getState());
-
     setTimeout(() => {
-        action$ = rootEffect(inputSeq(), state$);
+        handler = rootEffect();
         store.dispatch({ type: '@INIT' });
     });
+
+    let handler = (...args) => [];
 
     return function (dispatch) {
 
         return function (action) {
             const ret = dispatch(action);
-            action$.next(action);
+
+            for (const a of [].concat(...handler(action, store.getState(), (a) => store.dispatch(a)))) {
+                store.dispatch(a);
+            }
 
             return ret;
         };

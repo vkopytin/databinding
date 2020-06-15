@@ -22,7 +22,7 @@ function arrayMerge(array1, array2) {
 export function el(type, attrs = {}, ...children) {
     children = [].concat(...children).filter(a => a !== undefined);
     if (typeof type === 'function') {
-        return type({ ...attrs, render() { } }, children);
+        return type({ ...attrs, store: currentStore, children: children.length > 1 ? children : children[0] }, children);
     }
 
     return {
@@ -31,9 +31,9 @@ export function el(type, attrs = {}, ...children) {
         children
     };
 }
-
-export function makeVdom(oldDom) {
-
+export let currentStore = null;
+export function makeVdom(oldDom, store) {
+    currentStore = store;
     function createElement(node) {
         if (node === undefined) {
             return document.createTextNode('');
@@ -45,7 +45,7 @@ export function makeVdom(oldDom) {
             const { children = [] } = node;
             const [first] = children;
             const $el = createElement(first);
-            patch($el, node.type, node.attrs);
+            patch($el, node.type, { ...node.attrs, store });
             return $el;
         }
         const { type, attrs = {}, children } = node;
@@ -138,6 +138,7 @@ export function makeVdom(oldDom) {
     function patch($el, view, props = {}) {
         const newDom = view({
             ...props,
+            store,
             render(props) { patch($el, view, props); }
         });
         updateElement($el, newDom, oldDom);

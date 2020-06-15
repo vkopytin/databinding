@@ -1,14 +1,14 @@
-import { store } from './store';
+import * as vdom from './virtualDom';
 
 
 export function connect(mapStateToProps, mapDispatchToProps) {
     let unsubscribe = () => { };
     return function (wrappedTemplate) {
         return function (p) {
-            const { render, ...props } = p;
+            const { render, store = vdom.currentStore, ...props } = p;
             unsubscribe();
             unsubscribe = store.subscribe((state) => {
-                render(props);
+                render && render(props);
             });
 
             return wrappedTemplate({

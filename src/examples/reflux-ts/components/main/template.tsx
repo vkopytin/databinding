@@ -3,7 +3,8 @@ import { el } from '../../virtualDom';
 import { connect } from '../../connect';
 import { className as cn } from '../../utils';
 import { TodoListView } from '../../controls/todoListView';
-import { MainActions, selectMain } from '.';
+import { TodoListViewItem } from '../todoItem';
+import { selectMain } from '.';
 
 
 const ENTER_KEY = 13;
@@ -18,26 +19,24 @@ function mapStateToProps(state, props) {
             }
         }
     };
-    return newState;
-}
-
-function mapDispatchToProps(dispatch, props) {
     return {
-        dispatch: dispatch,
-        xmarkAllCompletedCommand: {
-            exec() {
-                dispatch(MainActions.markAllCompleted(!props.toggleAllActive));
-            }
-        },
-        clearCompletedCommand: {
-            exec() {
-                dispatch(MainActions.updateValue(props.value + 1))
-            }
+        ...newState,
+        errors: {
+            main: newState.error,
+            todos: state.todos && state.todos.error
         }
     };
 }
 
+function mapDispatchToProps(dispatch, props) {
+    return {
+        dispatch: dispatch
+    };
+}
+
 export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch, ...props } = {} as any) => <main>
+    <TodoListView items={props.errors}>
+    </TodoListView>
     <section className="todoapp device-content">
         <header className="bar bar-nav">
             <button className={cn('btn pull-left ?active', props.toggleAllActive)}>
@@ -77,7 +76,9 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
             </span>
         </footer>
         <section className={cn('content ?hidden', props.hasTodos)}>
-            <TodoListView items={props.items} />
+            <TodoListView items={props.items}>
+                {item => TodoListViewItem(item)}
+            </TodoListView>
             <footer className="info content-padded">
                 <p>Double-click to edit a todo</p>
                 <p>Written by <a href="https://github.com/addyosmani">Addy Osmani</a></p>

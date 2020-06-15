@@ -61,14 +61,15 @@ class TodosAdapter {
     }
 
     createTodo(title) {
-        return new Promise<boolean>((resolve) => {
+        return new Promise<{}>((resolve) => {
             setTimeout(() => {
-                data.push({
+                const newItem = {
                     id: index++,
                     title: title,
                     complete: false
-                });
-                resolve(true);
+                };
+                data.push(newItem);
+                resolve(newItem);
             }, 200);
         });
     }
