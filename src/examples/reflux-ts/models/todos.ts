@@ -57,10 +57,9 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
     },
     CREATE_TODO_RESULT: {
         createTodoResult: (type, payload) => ({ type, payload }),
-        reducer: (state: {} = {}, { type, payload }) => {
+        reducer: ({ loading, ...state}: any = {}, { type, payload }) => {
             return {
                 ...state,
-                loading: false,
                 items: [payload, ...selectItemsInternal(state)]
             };
         }
@@ -74,6 +73,47 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
                     dispatch(ToDoActions.createTodoResult(items));
                 } catch (ex) {
                     dispatch(ToDoActions.createTodoError(ex));
+                }
+            })();
+            return {
+                type,
+                payload: true
+            }
+        },
+        reducer: (state: {} = {}, { type, payload }) => {
+            return {
+                ...state,
+                loading: payload
+            };
+        }
+    },
+    UPDATE_TODO_ERROR: {
+        updateTodoError: (type, payload) => ({ type, payload }),
+        reducer: (state: {} = {}, { type, payload }) => {
+            return {
+                ...state,
+                error: payload
+            };
+        }
+    },
+    UPDATE_TODO_RESULT: {
+        updateTodoResult: (type, payload) => ({ type, payload }),
+        reducer: ({ loading, ...state}: any = {}, { type, payload }) => {
+            return {
+                ...state,
+                items: [payload, ...selectItemsInternal(state)]
+            };
+        }
+    },
+    UPDATE_TODO: {
+        updateTodo: (type, id, attrs) => dispatch => {
+            const adapter = new TodosAdapter();
+            (async () => {
+                try {
+                    //const item = await adapter.updateTodo(id, attrs);
+                    //dispatch(ToDoActions.updateTodoResult(item));
+                } catch (ex) {
+                    dispatch(ToDoActions.updateTodoError(ex));
                 }
             })();
             return {

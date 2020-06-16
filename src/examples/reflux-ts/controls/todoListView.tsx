@@ -11,6 +11,6 @@ const map = (items, fn) => {
     return res;
 }
 
-export const TodoListView = ({ items = [], children = item => '' + item }: {items: [], children?}) => <ul>
-    {map(items, item => el('li', {}, children(item)))}
+export const TodoListView = ({ items = [], children = item => '' + item }: {items: [], children?}) => <ul style={"padding: 0px;" as any}>
+    {map(items, item => <li style={"list-style: none;" as any}>{children(item)}</li>)}
 </ul>;
