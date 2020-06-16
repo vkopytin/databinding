@@ -6,7 +6,11 @@ export const EVENT_NAMES = {
     onInput: 'input',
     onKeyPress: 'keypress',
     onChange: 'change',
-    onSubmit: 'submit'
+    onSubmit: 'submit',
+    onKeyDown: 'keydown',
+    onKeyUp: 'keyup',
+    onBlur: 'blur',
+    onMouseDown: 'mousedown'
 };
 
 function arrayMerge(array1, array2) {
@@ -20,7 +24,7 @@ function arrayMerge(array1, array2) {
 }
 
 export function el(type, attrs = {}, ...children) {
-    children = [].concat(...children).filter(a => a !== undefined);
+    children = [].concat(...children).filter(a => [undefined, true, false].indexOf(a) === -1);
     if (typeof type === 'function') {
         return type({ ...attrs, store: currentStore, children: children.length > 1 ? children : children[0] }, children);
     }
@@ -107,16 +111,28 @@ export function makeVdom(oldDom, store) {
         }
     }
 
+    function detachEvents($el, oldAttrs) {
+        oldAttrs = oldAttrs || {}
+        const oldKeys = Object.keys(oldAttrs);
+        for (const key of oldKeys) {
+            if (key in EVENT_NAMES) {
+                updateEvent($el, undefined, oldAttrs[key], key);
+            }
+        }
+    }
+
     function updateElement($parent, newNode, oldNode, index = 0) {
         if (!oldNode) {
             $parent.appendChild(
                 createElement(newNode)
             );
         } else if (!newNode) {
+            detachEvents($parent.childNodes[index], oldNode.attrs);
             $parent.removeChild(
                 $parent.childNodes[index]
             );
         } else if (compare(newNode, oldNode)) {
+            detachEvents($parent.childNodes[index], oldNode.attrs);
             $parent.replaceChild(
                 createElement(newNode),
                 $parent.childNodes[index]

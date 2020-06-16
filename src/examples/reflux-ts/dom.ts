@@ -33,14 +33,16 @@ const dom = {
         };
     },
     detach(inst, eventName, fn) {
-        const pair = dom.eventHandlers.find(([key]) => fn === key);
+        const pair = dom.eventHandlers.find(([key]) => fn === key) || [];
         const [, handler] = pair;
         const index = dom.eventHandlers.indexOf(pair);
         if (index >= 0) {
             dom.eventHandlers.splice(index, 1);
             inst.removeEventListener(eventName, handler);
         } else {
-            throw new Error(`Error in detach method. Can't detach unexisting ${eventName} handler`);
+            setTimeout(() => {
+                throw new Error(`Error in detach method. Can't detach unexisting ${eventName} handler`);
+            });
         }
     },
     el(type, attrs, ...children) {
