@@ -101,7 +101,7 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
         reducer: ({ loading, ...state}: any = {}, { type, payload }) => {
             return {
                 ...state,
-                items: [payload, ...selectItemsInternal(state)]
+                items: selectItemsInternal(state)
             };
         }
     },
@@ -110,8 +110,8 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
             const adapter = new TodosAdapter();
             (async () => {
                 try {
-                    //const item = await adapter.updateTodo(id, attrs);
-                    //dispatch(ToDoActions.updateTodoResult(item));
+                    const item = await adapter.updateTodo(id, attrs);
+                    dispatch(ToDoActions.updateTodoResult(item));
                 } catch (ex) {
                     dispatch(ToDoActions.updateTodoError(ex));
                 }

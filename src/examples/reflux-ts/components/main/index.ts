@@ -9,6 +9,9 @@ export const selectNewTodoTitle = ({ newTodoTitle = '' }) => newTodoTitle;
 
 
 export const [MainActions, MainActionTypes, mainReducer] = declareActions({
+    UI_CREATE_TODO: {
+        uiCreateTodo: (type, payload) => ({ type, payload })
+    },
     UPDATE_MAIN_COMMANDS: {
         updateCommands: (type, payload) => ({ type, payload }),
         reducer: (state: {} = {}, { type, payload }) => {
@@ -51,17 +54,15 @@ const queryMain = map(selectMain);
 const queryNewTodoTitle = map(selectNewTodoTitle);
 
 export const main = () => {
-    let mark = 0;
     const init = merge(
         pipe(
-            filter(() => (mark++ % 2) === 0),
-            withArg(pipe(onState, queryMain, queryNewTodoTitle)),
-            map(([a, newTodoTitle], s, dispatch) => [
+            ofType('@INIT'),
+            map((a, s, dispatch) => [
                 MainActions.updateCommands({
                     markAllCompletedCommand: () => { },
                     updateNewTodoTitleCommand: (title) => dispatch(MainActions.updateNewTodoTitle(title)),
                     createNewItemCommand: () => {
-                        dispatch(ToDoActions.createTodo(newTodoTitle));
+                        dispatch(MainActions.uiCreateTodo());
                         dispatch(MainActions.updateNewTodoTitle(''));
                     }
                 })
@@ -70,6 +71,11 @@ export const main = () => {
         pipe(
             ofType('@INIT'),
             map(() => ToDoActions.fetchItems())
+        ),
+        pipe(
+            ofType(MainActionTypes.UI_CREATE_TODO),
+            withArg(pipe(onState, queryMain, queryNewTodoTitle)),
+            map(([a, newTodoTitle]) => ToDoActions.createTodo(newTodoTitle))
         )
     );
 

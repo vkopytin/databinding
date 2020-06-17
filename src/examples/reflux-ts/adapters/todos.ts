@@ -75,12 +75,12 @@ class TodosAdapter {
     }
 
     updateTodo(id, attrs) {
-        return new Promise<boolean>((resolve, reject) => {
+        return new Promise<{}>((resolve, reject) => {
             setTimeout(() => {
                 const item = utils.find(data, i => i.id === id);
                 if (item) {
                     Object.assign(item, attrs);
-                    resolve(true);
+                    resolve(item);
                 } else {
                     reject(new Error(`Can't update. Todo item with id: ${id} was not found`));
                 }

@@ -22,6 +22,11 @@ new WebpackDevServer(webpack(config), {
     compress: true,
     headers: {
         'Access-Control-Allow-Origin': '*'
+    },
+    before: function (app, server, compiler) {
+        app.get('/some/path', function (req, res) {
+            res.json({ custom: 'response' });
+        });
     }
 }).listen(port, ip, function (err) {
     if (err) {

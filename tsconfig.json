@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "experimentalDecorators": true,
+        "moduleResolution": "node",
         "module": "commonjs",
         "sourceMap": true,
         "target": "es5",
@@ -15,5 +16,5 @@
         "./src/*.d.ts"
     ],
     "include": ["src"],
-    "exclude": ["node_modules", "**/__tests__/*"]
+    "exclude": ["node_modules", "**/server/*", "**/__tests__/*"]
 }

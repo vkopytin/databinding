@@ -56,10 +56,20 @@ export function makeVdom(oldDom, store) {
         return dom.el(type, attrs, ...[].concat(children).map(child => createElement(child)));
     }
 
-    function compare(left, right) {
-        return typeof left !== typeof right
-            || typeof left === 'string' && left !== right
-            || left.type !== right.type;
+    function compare($el, newNode, oldNode) {
+        if (typeof newNode !== typeof oldNode) {
+            return true;
+        }
+        if (typeof newNode === 'string') {
+            if (newNode !== oldNode) {
+                const oldValue = $el.textContent;
+                if (oldValue !== newNode) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return newNode.type !== oldNode.type
     }
 
     function updateAttribute($el, newValue, oldValue, key) {
@@ -73,12 +83,19 @@ export function makeVdom(oldDom, store) {
     }
 
     function updateProperty($el, newValue, oldValue, key) {
+        const oldElValue = $el[key];
         if (oldValue === undefined) {
-            $el[key] = newValue;
+            if (oldElValue !== newValue) {
+                $el[key] = newValue;
+            }
         } else if (newValue === undefined) {
-            $el[key] = newValue;
+            if (oldElValue !== newValue) {
+                $el[key] = newValue;
+            }
         } else if (newValue !== oldValue) {
-            $el[key] = newValue;
+            if (oldElValue !== newValue) {
+                $el[key] = newValue;
+            }
         }
     }
 
@@ -131,7 +148,7 @@ export function makeVdom(oldDom, store) {
             $parent.removeChild(
                 $parent.childNodes[index]
             );
-        } else if (compare(newNode, oldNode)) {
+        } else if (compare($parent.childNodes[index], newNode, oldNode)) {
             detachEvents($parent.childNodes[index], oldNode.attrs);
             $parent.replaceChild(
                 createElement(newNode),

@@ -16,7 +16,8 @@ function mapStateToProps(state, props) {
         ...selectCurrentItem(state),
         updateOnEnter(evnt) {
             if (evnt.which === ENTER_KEY) {
-                newState.updateTodoTitleCommand(newState.currentItemId, evnt.target['innerText'])
+                newState.updateTodoTitleCommand(newState.currentItemId, evnt.target['innerText']);
+                newState.setCurrentItemCommand(null);
             }
         },
         revertOnEscape(e) {

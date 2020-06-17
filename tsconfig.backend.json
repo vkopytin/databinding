@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "jsx": "react",
+        "allowJs": false,
+        "allowUnreachableCode": true,
+        "baseUrl": "./",
+        "lib": [
+            "ES2015", "es6", "dom"
+        ],
+    },
+    "include": [ "./src/examples/reflux-ts/**/*.ts" ],
+//    "exclude": [ "node_modules" ],
+    "filesGlob": [
+        "./src/examples/reflux-ts/server/*.d.ts"
+    ]
+}

@@ -1,6 +1,6 @@
 import { declareActions } from '../../declareActions';
 import { map, ofType, pipe, merge, filter, withArg, onAction, onState, onDispatch } from '../../itrx';
-import { ToDoActions, queryItems, queryTodos } from '../../models/todos';
+import { ToDoActions, queryItems, queryTodos, ToDoActionTypes } from '../../models/todos';
 
 
 export const selectCurrentItem = ({ currentItem = {} }) => currentItem;
@@ -31,10 +31,9 @@ export const [ItemActions, ItemActionTypes, itemReducer] = declareActions({
 export const queryCurrentItem = map(selectCurrentItem);
 
 export const currentItem = () => {
-    let mark = 0;
     const init = merge(
         pipe(
-            filter(() => (mark++ % 3) === 0),
+            ofType('@INIT'),
             withArg(pipe(onState, queryCurrentItem), pipe(onState, queryTodos)),
             map(([a, item, todos], s, dispatch) => [
                 ItemActions.updateCommands({
@@ -47,8 +46,17 @@ export const currentItem = () => {
         )
     );
 
+    const updateTodoItem = merge(
+        pipe(
+            ofType(ToDoActionTypes.UPDATE_TODO_RESULT),
+            map(() => ToDoActions.fetchItems()),
+            map(() => [])
+        )
+    );
+
     return merge(
-        init
+        init,
+        updateTodoItem
     );
 }
 
