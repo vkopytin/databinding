@@ -2,7 +2,7 @@
     "compilerOptions": {
         "experimentalDecorators": true,
         "moduleResolution": "node",
-        "module": "commonjs",
+        "module": "CommonJS",
         "sourceMap": true,
         "target": "es5",
         "jsx": "react",

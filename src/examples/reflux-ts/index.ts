@@ -9,3 +9,9 @@ setTimeout(() => {
     const patch = makeVdom(null, store);
     patch($el, MainView, { value: 0 });
 });
+
+if ((module as any).hot) {
+    (module as any).hot.accept(true, () => {
+        window.location.reload();
+    });
+}

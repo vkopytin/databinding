@@ -27,7 +27,7 @@
     "lib/**/*"
   ],
   "browser": {
-      "databindjs": "./src/databindjs"
+    "databindjs": "./src/databindjs"
   },
   "repository": {
     "type": "git",
@@ -100,9 +100,9 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.5",
     "underscore": "^1.9.1",
-    "webpack": "^4.39.2",
+    "webpack": "^4.43.0",
     "webpack-cli": "^3.3.7",
-    "webpack-dev-server": "^3.9.0",
+    "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.25.0",
     "webpack-node-externals": "^1.7.2"
   },

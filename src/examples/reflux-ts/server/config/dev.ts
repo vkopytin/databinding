@@ -3,6 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import webpack = require('webpack');
 import webpackConfig = require('../../../../../webpack.dev.config');
+import webpackDevMiddleware = require('webpack-dev-middleware');
+import webpackHotMiddleware = require('webpack-hot-middleware');
+import webpackHot = require('webpack/hot/dev-server');
 
 
 // tslint:disable-next-line: no-console
@@ -11,24 +14,28 @@ const warn = (...args) => console.log(...args);
 const devConfig = (app: express.Application) => {
     warn('...starting development mode...');
 
-    console.log(JSON.stringify(webpackConfig.resolve));
         const compiler = webpack({
             ...webpackConfig,
             entry: {
                 ...webpackConfig.entry,
-                app: [
-                    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&overlay=false',
+                main: [
+                    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&overlay=false&reload=true',
                     ...webpackConfig.entry.main
                 ]
             }
         });
         let devMiddleware;
-        app.use(devMiddleware = require('webpack-dev-middleware')(
+        app.use(devMiddleware = webpackDevMiddleware(
             compiler, {
-                noInfo: true,
-                publicPath: webpackConfig.output.publicPath
-            })
-        );
+            noInfo: true,
+            stats: { colors: true },
+            watchOptions: {
+                aggregateTimeout: 300,
+                poll: true
+            }
+        }));
+        const wphmw = webpackHotMiddleware(compiler);
+        app.use(wphmw);
         compiler.plugin('done', stats => {
             const versionInfo = JSON.stringify({
                 channel: process.env.NODE_ENV,

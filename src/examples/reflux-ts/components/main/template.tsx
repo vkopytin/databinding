@@ -81,8 +81,6 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
             </TodoListView>
             <footer className="info content-padded">
                 <p>Double-click to edit a todo</p>
-                <p>Written by <a href="https://github.com/addyosmani">Addy Osmani</a></p>
-                <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
             </footer>
         </section>
     </section>

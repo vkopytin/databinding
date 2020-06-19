@@ -39,11 +39,10 @@ export function applyMiddleware(...middlewares) {
 function effectsMiddleware(store) {
 
     setTimeout(() => {
-        handler = rootEffect();
         store.dispatch({ type: '@INIT' });
     });
 
-    let handler = (...args) => [];
+    let handler = rootEffect();
 
     return function (dispatch) {
 

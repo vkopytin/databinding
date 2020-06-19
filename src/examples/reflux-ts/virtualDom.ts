@@ -13,6 +13,18 @@ export const EVENT_NAMES = {
     onMouseDown: 'mousedown'
 };
 
+export const propConverters = {
+    contentEditable: function (value) {
+        return !!value;
+    },
+    convert(propName, value) {
+        if (propName in propConverters) {
+            return propConverters[propName](value);
+        }
+        return value;
+    }
+};
+
 function arrayMerge(array1, array2) {
     const array = [].concat(array1);
     for (let i = 0; i < array2.length; i++) {
@@ -86,15 +98,15 @@ export function makeVdom(oldDom, store) {
         const oldElValue = $el[key];
         if (oldValue === undefined) {
             if (oldElValue !== newValue) {
-                $el[key] = newValue;
+                $el[key] = propConverters.convert(key, newValue);
             }
         } else if (newValue === undefined) {
             if (oldElValue !== newValue) {
-                $el[key] = newValue;
+                $el[key] = propConverters.convert(key, newValue);
             }
         } else if (newValue !== oldValue) {
             if (oldElValue !== newValue) {
-                $el[key] = newValue;
+                $el[key] = propConverters.convert(key, newValue);
             }
         }
     }
