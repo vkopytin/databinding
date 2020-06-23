@@ -5,19 +5,27 @@ import { className as cn } from '../../utils';
 import { TodoListView } from '../../controls/todoListView';
 import { TodoListViewItem } from '../todoItem';
 import { selectMain } from '.';
+import { Actions } from '../';
+import { bindActions } from '../../bindActions';
 
 
 const ENTER_KEY = 13;
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state, props: {
+    error;
+    showClearCompleted;
+    activeFilter;
+    hasTodos;
+    items;
+    completeItems;
+    activeItems;
+    totalText;
+    todoCount;
+    manyTasks;
+}) {
     const newState = {
         ...props,
-        ...selectMain(state),
-        onKeypress(evnt) {
-            if (evnt.which === ENTER_KEY) {
-                newState.createNewItemCommand();
-            }
-        }
+        ...selectMain(state)
     };
     return {
         ...newState,
@@ -29,37 +37,53 @@ function mapStateToProps(state, props) {
 }
 
 function mapDispatchToProps(dispatch, props) {
+    const actions = bindActions(Actions, dispatch);
     return {
-        dispatch: dispatch
+        dispatch: dispatch,
+        onKeypress(evnt) {
+            if (evnt.which === ENTER_KEY) {
+                actions.uiCreateTodo();
+            }
+        },
+        ...actions
     };
 }
 
-export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch, ...props } = {} as any) => <main>
+export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch, ...props } = {
+
+} as ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>) => <main>
     <TodoListView items={props.errors}>
     </TodoListView>
+    <TodoListView items={props}>{(item, key) => <div><span>{key}</span>:<span>{JSON.stringify(item)}</span></div>}</TodoListView>
     <section className="todoapp device-content">
         <header className="bar bar-nav">
-            <button className={cn('btn pull-left ?active', props.toggleAllActive)}>
+            <button className={cn('btn pull-left ?active', props.toggleAllComplete)}>
                 <input className="toggle-all hidden" id="toggle-all" type="checkbox"
-                    defaultChecked={!!props.toggleAllActive}
-                    onClick={e => props.markAllCompletedCommand.exec()}
+                    defaultChecked={!!props.toggleAllComplete}
+                    onClick={e => props.uiToggleAllComplete(e.target['checked'])}
                 />
                 <label htmlFor="toggle-all">Complete All</label>
             </button>
             <button className={cn('clear-completed btn pull-right ?hidden', props.showClearCompleted)}
-                onClick={e => props.clearCompletedCommand.exec()}
+                onClick={e => props.clearCompleted()}
             >Clear completed</button>
             <div className="filters segmented-control">
-                <a className={cn("control-item ?active", !props.activeFilter)} href="#/">All</a>
-                <a className={cn("control-item ?active", props.activeFilter === 'active')} href="#/active">Active</a>
-                <a className={cn("control-item ?active", props.activeFilter === 'completed')} href="#/completed">Completed</a>
+                <a className={cn("control-item ?active", !props.activeFilter)} href="#/"
+                    onClick={evnt => props.uiSetActiveFilter('all')}
+                >All</a>
+                <a className={cn("control-item ?active", props.activeFilter === 'active')} href="#/active"
+                    onClick={evnt => props.uiSetActiveFilter('active')}
+                >Active</a>
+                <a className={cn("control-item ?active", props.activeFilter === 'completed')} href="#/completed"
+                    onClick={evnt => props.uiSetActiveFilter('complete')}    
+                >Completed</a>
             </div>
         </header>
         <section className="bar bar-standard bar-header-secondary">
             <form onSubmit={e => e.preventDefault()}>
                 <input className="new-todo" type="search" placeholder="What needs to be done?"
                     value={props.newTodoTitle}
-                    onInput={e => props.updateNewTodoTitleCommand(e.target['value'])}
+                    onInput={e => props.uiUpdateNewTodoTitle(e.target['value'])}
                     onKeyPress={e => props.onKeypress(e)}
                 />
             </form>
@@ -76,7 +100,13 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
             </span>
         </footer>
         <section className={cn('content ?hidden', props.hasTodos)}>
-            <TodoListView items={props.items}>
+                <TodoListView items={
+                    props.activeFilter === 'complete'
+                        ? props.completeItems
+                        : props.activeFilter === 'active'
+                            ? props.activeItems
+                            : props.items
+                }>
                 {item => TodoListViewItem(item)}
             </TodoListView>
             <footer className="info content-padded">

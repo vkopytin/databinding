@@ -69,8 +69,8 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
             const adapter = new TodosAdapter();
             (async () => {
                 try {
-                    const items = await adapter.createTodo(title);
-                    dispatch(ToDoActions.createTodoResult(items));
+                    const item = await adapter.createTodo(title);
+                    dispatch(ToDoActions.createTodoResult(item));
                 } catch (ex) {
                     dispatch(ToDoActions.createTodoError(ex));
                 }

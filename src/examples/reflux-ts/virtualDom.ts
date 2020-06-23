@@ -151,15 +151,14 @@ export function makeVdom(oldDom, store) {
     }
 
     function updateElement($parent, newNode, oldNode, index = 0) {
+        let nodesToRemove = [];
         if (!oldNode) {
             $parent.appendChild(
                 createElement(newNode)
             );
         } else if (!newNode) {
             detachEvents($parent.childNodes[index], oldNode.attrs);
-            $parent.removeChild(
-                $parent.childNodes[index]
-            );
+            nodesToRemove.push($parent.childNodes[index]);
         } else if (compare($parent.childNodes[index], newNode, oldNode)) {
             detachEvents($parent.childNodes[index], oldNode.attrs);
             $parent.replaceChild(
@@ -170,14 +169,17 @@ export function makeVdom(oldDom, store) {
             updateAttributes($parent.childNodes[index], newNode.attrs, oldNode.attrs);
             const length = Math.max(newNode.children.length, oldNode.children.length);
             for (let i = 0; i < length; i++) {
-                updateElement(
-                    $parent.childNodes[index],
-                    newNode.children[i],
-                    oldNode.children[i],
-                    i
-                );
+                nodesToRemove = [
+                    ...nodesToRemove,
+                    ...updateElement(
+                        $parent.childNodes[index],
+                        newNode.children[i],
+                        oldNode.children[i],
+                        i
+                    )];
             }
         }
+        return nodesToRemove;
     }
 
     function patch($el, view, props = {}) {
@@ -186,7 +188,8 @@ export function makeVdom(oldDom, store) {
             store,
             render(props) { patch($el, view, props); }
         });
-        updateElement($el, newDom, oldDom);
+        const removedNodes = updateElement($el, newDom, oldDom);
+        removedNodes.map(node => node.parentElement.removeChild(node));
         oldDom = newDom;
     }
 

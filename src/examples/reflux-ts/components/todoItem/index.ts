@@ -5,48 +5,58 @@ import { ToDoActions, queryItems, queryTodos, ToDoActionTypes } from '../../mode
 
 export const selectCurrentItem = ({ currentItem = {} }) => currentItem;
 export const selectLabelTitle = ({ title }) => title;
-export const selectEditTitle = ({ title }) => title;
+export const selectEditTitle = ({ editTitle }) => editTitle;
+export const selectCurrentItemId = ({ currentItemId }) => currentItemId;
 
 export const [ItemActions, ItemActionTypes, itemReducer] = declareActions({
-    UPDATE_ITEM_COMMANDS: {
-        updateCommands: (type, payload) => ({ type, payload }),
+    UI_UPDATE_EDITING_TITLE: {
+        uiUpdateEditingTitle: (type, payload) => ({ type, payload }),
         reducer: (state: {} = {}, { type, payload }) => {
             return {
                 ...state,
-                ...payload
+                editTitle: payload
             };
         }
     },
-    SET_CURRENT_ITEM: {
-        setCurrentItem: (type, payload) => ({ type, payload }),
+    UI_SET_CURRENT_ITEM: {
+        uiSetCurrentItem: (type, payload) => ({ type, payload }),
         reducer: (state: {} = {}, { type, payload }) => {
             return {
                 ...state,
                 currentItemId: payload
             };
         }
+    },
+    UI_UPDATE_TODO_TITLE: {
+        uiUpdateTodoTitle: (type, payload) => ({ type, payload })
     }
 });
 
 export const queryCurrentItem = map(selectCurrentItem);
+export const queryEditTitle = map(selectEditTitle);
+export const queryCurrentItemId = map(selectCurrentItemId);
 
 export const currentItem = () => {
-    const init = merge(
+
+    const fromView = merge(
         pipe(
-            ofType('@INIT'),
-            withArg(pipe(onState, queryCurrentItem), pipe(onState, queryTodos)),
-            map(([a, item, todos], s, dispatch) => [
-                ItemActions.updateCommands({
-                    setCurrentItemCommand: (id) => dispatch(ItemActions.setCurrentItem(id)),
-                    updateTodoTitleCommand: (id, title) => dispatch(ToDoActions.updateTodo(id, {
-                        title
-                    }))
-                })
-            ])
+            ofType(ItemActionTypes.UI_SET_CURRENT_ITEM),
+            withArg(pipe(onState, queryTodos, queryItems)),
+            map(([{ payload: id }, items]: [any, any[]]) => {
+                const currentItem = items.find(item => item.id === id);
+                if (!currentItem) {
+                    return [];
+                }
+                return ItemActions.uiUpdateEditingTitle(currentItem.title);
+            })
+        ),
+        pipe(
+            ofType(ItemActionTypes.UI_UPDATE_TODO_TITLE),
+            withArg(pipe(onState, queryCurrentItem, queryCurrentItemId), pipe(onState, queryCurrentItem, queryEditTitle)),
+            map(([a, itemId, editTitle]) => ToDoActions.updateTodo(itemId, { title: editTitle }))
         )
     );
-
-    const updateTodoItem = merge(
+    const fromService = merge(
         pipe(
             ofType(ToDoActionTypes.UPDATE_TODO_RESULT),
             map(() => ToDoActions.fetchItems()),
@@ -55,8 +65,8 @@ export const currentItem = () => {
     );
 
     return merge(
-        init,
-        updateTodoItem
+        fromView,
+        fromService
     );
 }
 

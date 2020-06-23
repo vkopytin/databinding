@@ -65,9 +65,9 @@ const createThunkMiddleware = (extraArgument?) => ({ dispatch, getState }) => ne
 
     return next(action);
 };
-  
+
 var thunk = createThunkMiddleware();
-  
+
 export const store = createStore(reducer, { items: [], itemName: '' }, applyMiddleware(
     thunk,
     effectsMiddleware

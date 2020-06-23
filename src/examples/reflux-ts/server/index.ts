@@ -26,17 +26,31 @@ try {
     setTimeout(() => { throw ex; });
 }
 
+declare var module: {
+    hot;
+};
+
 if (process.env.NODE_ENV === 'development') {
     let currentApp = app;
 
-    if ((module as any).hot) {
-        const newApp = require('./main').app;
-        (module as any).hot.accept('./index.ts', () => {
+    if (module.hot) {
+        module.hot.check().then(function (updateModules) {
+            console.log('===== OK');
+        });
+        module.hot.accept(true, () => {
+            const newApp = require('./main').app;
             httpsServer.removeListener('request', currentApp);
             httpsServer.on('request', newApp);
             currentApp = newApp;
         });
-        (module as any).hot.accept('./main.ts', () => {
+        module.hot.accept('./index.ts', () => {
+            const newApp = require('./main').app;
+            httpsServer.removeListener('request', currentApp);
+            httpsServer.on('request', newApp);
+            currentApp = newApp;
+        });
+        module.hot.accept('./main.ts', () => {
+            const newApp = require('./main').app;
             httpsServer.removeListener('request', currentApp);
             httpsServer.on('request', newApp);
             currentApp = newApp;

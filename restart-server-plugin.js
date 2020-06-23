@@ -80,6 +80,7 @@ class StartServerPlugin {
 
     afterEmit(compilation, callback) {
         if (this.worker && this.worker.isConnected()) {
+            return callback();
             this.worker.on('exit', () => {
                 this.startServer(compilation, callback);
             });

@@ -3,6 +3,8 @@ import { el } from '../../virtualDom';
 import { connect } from '../../connect';
 import { className as cn } from '../../utils';
 import { selectLabelTitle, selectCurrentItem, selectEditTitle } from './';
+import { Actions } from '../';
+import { bindActions } from '../../bindActions';
 
 
 const ENTER_KEY = 13;
@@ -13,19 +15,7 @@ function mapStateToProps(state, props) {
         ...props,
         labelTitle: selectLabelTitle(props),
         editTitle: selectEditTitle(props),
-        ...selectCurrentItem(state),
-        updateOnEnter(evnt) {
-            if (evnt.which === ENTER_KEY) {
-                newState.updateTodoTitleCommand(newState.currentItemId, evnt.target['innerText']);
-                newState.setCurrentItemCommand(null);
-            }
-        },
-        revertOnEscape(e) {
-            if (e.which === ESC_KEY) {
-                newState.setCurrentItemCommand(null);
-                //this.cancelChanges();
-            }
-        }
+        ...selectCurrentItem(state)
     };
     return {
         ...newState,
@@ -37,44 +27,52 @@ function mapStateToProps(state, props) {
 }
 
 function mapDispatchToProps(dispatch, props) {
+    const actions = bindActions(Actions, dispatch);
     return {
-        dispatch: dispatch
+        dispatch: dispatch,
+        ...actions,
+        updateOnEnter(evnt, itemId) {
+            if (evnt.which === ENTER_KEY) {
+                actions.uiUpdateTodoTitle(itemId);
+                actions.uiSetCurrentItem(null);
+            }
+        },
+        revertOnEscape(e) {
+            if (e.which === ESC_KEY) {
+                actions.uiSetCurrentItem(null);
+                //this.cancelChanges();
+            }
+        }
     };
 }
 
-export const TodoListViewItem = connect(mapStateToProps, mapDispatchToProps)(({
-    completed,
-    currentItemId,
-    hidden,
-    id,
-    setCompletedCommand,
-    setCurrentItemCommand,
-    labelTitle,
-    editTitle,
-    updateTodoTitleCommand,
-    updateOnEnter,
-    revertOnEscape,
-    close,
-    clear
-}) => <div className={cn(
+export const TodoListViewItem = connect(mapStateToProps, mapDispatchToProps)(({ dispatch, ...props } = {
+
+} as ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>) => <div className={cn(
     'table-view-cell', 'media', 'completed?', 'editing?', 'hidden?',
-    completed, currentItemId, hidden
+    props.completed, props.currentItemId, props.hidden
 )}>
         <span className="media-object pull-left" style={"display: inline-block;" as any}>
-            <input id={`view-${id}`} className="hidden" type="checkbox" checked={completed} onChange={e => setCompletedCommand(id, e.target['checked'])} />
+            <input id={`view-${props.id}`} className="hidden" type="checkbox"
+                checked={props.complete}
+                onChange={e => props.setCompleted(props.id, e.target['checked'])}
+            />
         </span>
         <span className="input-group" style={"display: inline-block; width: 70%;" as any}>
-            {currentItemId === id || <label className="view input" style={"padding: 1px 1px 1px 1px;" as any}
-                onClick={e => setCurrentItemCommand(id)}
-            >{labelTitle}</label>}
-            {currentItemId === id && <div className="edit" style={"border: 1px solid grey;outline: none;" as any}
+            {props.currentItemId === props.id || <label className="view input" style={"padding: 1px 1px 1px 1px;" as any}
+                onClick={e => props.uiSetCurrentItem(props.id)}
+            >{props.labelTitle}</label>}
+            {props.currentItemId === props.id && <div className="edit" style={"border: 1px solid grey;outline: none;" as any}
                 contentEditable={true}
-                onInput={e => updateTodoTitleCommand(id, e.target['innerText'])}
-                onKeyPress={e => updateOnEnter(e)}
-                onKeyUp={e => revertOnEscape(e)}
-                onBlur={e => setCurrentItemCommand(null)}
-            >{editTitle}</div>}
+                onInput={e => props.uiUpdateEditingTitle(e.target['innerText'])}
+                onKeyPress={e => props.updateOnEnter(e, props.currentItemId)}
+                onKeyUp={e => props.revertOnEscape(e)}
+                onBlur={e =>props.uiSetCurrentItem(null)}
+            >{props.editTitle}</div>}
         </span>
-        <button className="destroy btn icon icon-trash" onClick={e => clear()}  style={"display: inline-block;" as any}>Delete</button>
+        <button className="destroy btn icon icon-trash"
+            onClick={e => props.clear()}
+            style={"display: inline-block;" as any}
+        >Delete</button>
     </div>
 );

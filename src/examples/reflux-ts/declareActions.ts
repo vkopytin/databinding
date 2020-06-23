@@ -8,17 +8,19 @@ export function createReducer (initialState) {
 
 type UnionToIntersection<U> = (U extends any
     ? (k: U) => void
-    : never) extends ((k: infer I) => void)
+    : any) extends ((k: infer I) => void)
     ? I
-    : never;
+    : any;
+
+type ActionArg<Y, T> = T extends (a: keyof Y, b: infer I, c?) => any ? I : any;
 
 export function declareActions<T extends {
-    [type: string]: {
-        [name: string]: (type: string, props, meta?) => any;
+    [type in keyof T]: {
+        [name in keyof T[K]]: (type: type, props: P, meta?) => any;
     };
-}, K extends keyof T, KK extends keyof UnionToIntersection<T[K]>>(
+}, K extends keyof T, KK extends keyof UnionToIntersection<T[K]>, P, O extends UnionToIntersection<T[K]>>(
     actions: T
-): [{ [key in KK]: (...args) => any }, { [key in K]: K }, any] {
+): [{ [key in KK]: (args?: ActionArg<T, O[KK]>, meta?) => any }, { [key in K]: K }, any] {
     const reducers = {};
     const keys = Object.keys(actions);
     const resActions = keys.reduce((res, type) => {

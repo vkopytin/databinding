@@ -10,7 +10,10 @@ module.exports = {
     target: 'node',
     devtool: "inline-source-map",
     entry: {
-        app: ['webpack/hot/poll?1000', path.join(__dirname, './src/examples/reflux-ts/server/index.ts')],
+        app: [
+            'webpack/hot/poll?1000',
+            path.join(__dirname, './src/examples/reflux-ts/server/index.ts')
+        ],
     },
     output: {
         path: path.resolve(__dirname, './dist'),
