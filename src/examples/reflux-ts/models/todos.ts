@@ -19,7 +19,8 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
             return {
                 ...state,
                 loading: false,
-                items: payload
+                items: selectItemsById(payload),
+                order: selectItemsOrder(payload)
             };
         }
     },
@@ -60,7 +61,10 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
         reducer: ({ loading, ...state}: any = {}, { type, payload }) => {
             return {
                 ...state,
-                items: [payload, ...selectItemsInternal(state)]
+                items: {
+                    ...selectItems(state),
+                    [payload.id]: payload
+                }
             };
         }
     },
@@ -101,7 +105,10 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
         reducer: ({ loading, ...state}: any = {}, { type, payload }) => {
             return {
                 ...state,
-                items: selectItemsInternal(state)
+                items: {
+                    ...selectItems(state),
+                    [payload.id]: payload
+                }
             };
         }
     },
@@ -127,17 +134,63 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
                 loading: payload
             };
         }
+    },
+    DELETE_TODO_ERROR: {
+        deleteTodoError: (type, payload) => ({ type, payload }),
+        reducer: (state: {} = {}, { type, payload }) => {
+            return {
+                ...state,
+                error: payload
+            };
+        }
+    },
+    DELETE_TODO_RESULT: {
+        deleteTodoResult: (type, payload) => ({ type, payload }),
+        reducer: ({ loading, ...state }: any = {}, { type, payload: { id } }) => {
+            const { [id]: removed, ...items } = selectItems(state) as any;
+            return {
+                ...state,
+                items
+            };
+        }
+    },
+    DELETE_TODO: {
+        deleteTodo: (type, id) => dispatch => {
+            const adapter = new TodosAdapter();
+            (async () => {
+                try {
+                    const item = await adapter.deleteTodo(id);
+                    dispatch(ToDoActions.deleteTodoResult(item));
+                } catch (ex) {
+                    dispatch(ToDoActions.deleteTodoError(ex));
+                }
+            })();
+            return {
+                type,
+                payload: true
+            }
+        },
+        reducer: (state: {} = {}, { type, payload }) => {
+            return {
+                ...state,
+                loading: payload
+            };
+        }
     }
 });
 
+const selectItemsById = (items = []) => items.reduce((res, item) => ({
+    ...res,
+    [item.id]: item
+}), {});
+const selectItemsOrder = (items = []) => items.map(({ id }) => id);
 export const selectTodos = ({ todos }) => todos;
 export const selectItemsInternal = ({ items = [] }) => items;
-export const selectItems = ({ items = [] }) => items.reduce((res, item, index) => {
-    return [...res, item];
-}, []);
+export const selectItems = ({ items = {}, order = [] }) => order.map(id => items[id]);
 
 export const queryTodos = map(selectTodos);
 export const queryItems = map(selectItems);
 
 export const changeItems = ofType(ToDoActionTypes.FETCH_TODOS_RESULT);
 export const createItem = ofType(ToDoActionTypes.CREATE_TODO_RESULT);
+export const deleteItem = ofType(ToDoActionTypes.DELETE_TODO_RESULT);

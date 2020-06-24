@@ -1,13 +1,14 @@
 import { declareActions } from '../../declareActions';
 import { map, ofType, pipe, merge, filter, withArg, onAction, onState, onDispatch } from '../../itrx';
-import { ToDoActions, changeItems, queryItems, queryTodos, selectTodos, createItem, ToDoActionTypes } from '../../models/todos';
+import { ToDoActions, changeItems, queryItems, queryTodos, deleteItem, createItem, ToDoActionTypes } from '../../models/todos';
+import { pick } from '../../utils';
 
 
 export const selectMain = ({ main = { newTodoTitle: '', toggleAllComplete: false } }) => main;
 export const selectItems = ({ items = [] }) => items;
 export const selectItemIsComplete = ({ complete }) => complete;
-export const selectActiveItems = (items = []) => items.filter(item => !selectItemIsComplete(item));
-export const selectCompleteItems = (items = []) => items.filter(item => selectItemIsComplete(item));
+export const selectActiveItems = (items = []) => pick(items, item => !selectItemIsComplete(item));
+export const selectCompleteItems = (items = []) => pick(items, item => selectItemIsComplete(item));
 export const selectNewTodoTitle = ({ newTodoTitle = '' }) => newTodoTitle;
 export const selectToggleAllComplete = ({ toggleAllComplete }) => toggleAllComplete;
 
@@ -37,8 +38,8 @@ export const [MainActions, MainActionTypes, mainReducer] = declareActions({
             };
         }
     },
-    CLEAR_COMPLETED: {
-        clearCompleted: (type, payload) => ({ type, payload })
+    UI_CLEAR_COMPLETED: {
+        uiClearCompleted: (type, payload) => ({ type, payload })
     },
     UPDATE_MAIN_NEW_TODO_TITLE: {
         updateNewTodoTitle: (type, payload: string) => ({ type, payload }),
@@ -65,6 +66,7 @@ export const [MainActions, MainActionTypes, mainReducer] = declareActions({
 const queryMain = map(selectMain);
 const queryNewTodoTitle = map(selectNewTodoTitle);
 const queryToggleAllComplete = map(selectToggleAllComplete);
+const queryCompleteItems = map(selectCompleteItems);
 
 const whenUpdateNewTitle = ofType(MainActionTypes.UI_UPDATE_NEW_TITLE);
 const whenCreateTodo = ofType(MainActionTypes.UI_CREATE_TODO);
@@ -104,6 +106,11 @@ export const main = () => {
             ofType(MainActionTypes.UI_SET_ACTIVE_FILTER),
             withArg(pipe(onState, queryTodos, queryItems)),
             map(([a, todos]) => MainActions.updateItems(todos))
+        ),
+        pipe(
+            ofType(MainActionTypes.UI_CLEAR_COMPLETED),
+            withArg(pipe(onState, queryMain, queryItems, queryCompleteItems)),
+            map(([a, completeItems = []]) => completeItems.map(item => ToDoActions.deleteTodo(item.id)))
         )
     );
     const fromService = merge(
@@ -112,7 +119,11 @@ export const main = () => {
             map(() => MainActions.updateNewTodoTitle(''))
         ),
         pipe(
-            merge(changeItems, createItem),
+            merge(createItem, deleteItem),
+            map(() => [ToDoActions.fetchItems()])
+        ),
+        pipe(
+            merge(changeItems, createItem, deleteItem),
             withArg(pipe(onState, queryTodos, queryItems)),
             map(([action, todos]) => {
                 return MainActions.updateItems(todos);

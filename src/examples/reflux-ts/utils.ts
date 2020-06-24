@@ -18,3 +18,16 @@ export function className(str: string, ...args) {
 
     return res.join(' ');
 }
+
+export function pick(obj, fn) {
+    const keys = Object.keys(obj);
+    return keys.reduce((res, key) => {
+        if (fn(obj[key])) {
+            return {
+                ...res,
+                [key]: obj[key]
+            };
+        }
+        return res;
+    }, {});
+}

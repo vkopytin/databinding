@@ -65,7 +65,7 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
                 <label htmlFor="toggle-all">Complete All</label>
             </button>
             <button className={cn('clear-completed btn pull-right ?hidden', props.showClearCompleted)}
-                onClick={e => props.clearCompleted()}
+                onClick={e => props.uiClearCompleted()}
             >Clear completed</button>
             <div className="filters segmented-control">
                 <a className={cn("control-item ?active", !props.activeFilter)} href="#/"
@@ -110,7 +110,7 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
                 {item => TodoListViewItem(item)}
             </TodoListView>
             <footer className="info content-padded">
-                <p>Double-click to edit a todo</p>
+                <p>Click to edit a todo</p>
             </footer>
         </section>
     </section>

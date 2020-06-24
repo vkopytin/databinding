@@ -1,6 +1,6 @@
 import { mainReducer, selectMain } from './components/main';
 import { toDoReducer, selectTodos } from './models/todos';
-import { itemReducer, selectCurrentItem } from './components/todoItem';
+import { itemReducer, selectCurrent } from './components/todoItem';
 
 
 export const reducer = (prevState, action) => {
@@ -8,7 +8,7 @@ export const reducer = (prevState, action) => {
         ...prevState,
         main: mainReducer(selectMain(prevState), action),
         todos: toDoReducer(selectTodos(prevState), action),
-        currentItem: itemReducer(selectCurrentItem(prevState), action)
+        current: itemReducer(selectCurrent(prevState), action)
     };
     const { type, payload } = action;
     switch (type) {
