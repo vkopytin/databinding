@@ -36,7 +36,9 @@ function arrayMerge(array1, array2) {
 }
 
 export function el(type, attrs = {}, ...children) {
-    children = [].concat(...children).filter(a => [undefined, true, false].indexOf(a) === -1);
+    children = [].concat(...children)
+        .filter(a => [undefined, true, false].indexOf(a) === -1)
+        .map(item => (['object', 'function'].indexOf(typeof item) === -1 ? '' + item : item));
     if (typeof type === 'function') {
         return type({ ...attrs, store: currentStore, children: children.length > 1 ? children : children[0] }, children);
     }
@@ -54,7 +56,7 @@ export function makeVdom(oldDom, store) {
         if (node === undefined) {
             return document.createTextNode('');
         }
-        if (typeof node === 'string') {
+        if (['object', 'function'].indexOf(typeof node) === -1) {
             return document.createTextNode(node);
         }
         if (typeof node.type === 'function') {
@@ -65,14 +67,16 @@ export function makeVdom(oldDom, store) {
             return $el;
         }
         const { type, attrs = {}, children } = node;
-        return dom.el(type, attrs, ...[].concat(children).map(child => createElement(child)));
+        const { ref, ...attributes } = (attrs || {});
+        const el = dom.el(type, attributes, ...[].concat(children).map(child => createElement(child)));
+        return el;
     }
 
     function compare($el, newNode, oldNode) {
         if (typeof newNode !== typeof oldNode) {
             return true;
         }
-        if (typeof newNode === 'string') {
+        if (['object', 'function'].indexOf(typeof newNode) === -1) {
             if (newNode !== oldNode) {
                 const oldValue = $el.textContent;
                 if (oldValue !== newNode) {
@@ -178,6 +182,9 @@ export function makeVdom(oldDom, store) {
                         i
                     )];
             }
+        }
+        if (newNode && newNode.attrs && newNode.attrs.ref) {
+            newNode.attrs.ref($parent.childNodes[index]);
         }
         return nodesToRemove;
     }

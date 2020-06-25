@@ -52,9 +52,6 @@ function mapDispatchToProps(dispatch, props) {
 export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch, ...props } = {
 
 } as ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>) => <main>
-    <TodoListView items={props.errors}>
-    </TodoListView>
-    <TodoListView items={props}>{(item, key) => <div><span>{key}</span>:<span>{JSON.stringify(item)}</span></div>}</TodoListView>
     <section className="todoapp device-content">
         <header className="bar bar-nav">
             <button className={cn('btn pull-left ?active', props.toggleAllComplete)}>
@@ -90,13 +87,13 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
         </section>
         <footer className={cn('footer bar bar-standard bar-footer ?hidden', props.hasTodos)}>
             <span className="todo-count title">
-                <strong>{props.todoCount}</strong>&nbsp;
-            {props.manyTasks
+                <strong>{props.activeItems ? props.activeItems.length : 0}</strong>&nbsp;
+            {!(props.activeItems && props.activeItems.length === 1)
                     ? <span className="items-word">items</span>
                     : <span className="item-word">item</span>
                 }
             &nbsp;left from&nbsp;
-            <span className="total">{props.totalText}</span>
+            <span className="total">{props.items ? props.items.length : 0}</span>
             </span>
         </footer>
         <section className={cn('content ?hidden', props.hasTodos)}>

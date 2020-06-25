@@ -64,7 +64,8 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
                 items: {
                     ...selectItems(state),
                     [payload.id]: payload
-                }
+                },
+                order: [payload.id, ...selectOrder(state)]
             };
         }
     },
@@ -146,11 +147,12 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
     },
     DELETE_TODO_RESULT: {
         deleteTodoResult: (type, payload) => ({ type, payload }),
-        reducer: ({ loading, ...state }: any = {}, { type, payload: { id } }) => {
-            const { [id]: removed, ...items } = selectItems(state) as any;
+        reducer: ({ loading, ...state }: any = {}, { type, payload: id }) => {
+            const { [id]: removed, ...items } = selectItemsInternal(state) as any;
             return {
                 ...state,
-                items
+                items,
+                order: selectOrder(state).filter(pos => pos !== id)
             };
         }
     },
@@ -160,7 +162,7 @@ export const [ToDoActions, ToDoActionTypes, toDoReducer] = declareActions({
             (async () => {
                 try {
                     const item = await adapter.deleteTodo(id);
-                    dispatch(ToDoActions.deleteTodoResult(item));
+                    dispatch(ToDoActions.deleteTodoResult(id));
                 } catch (ex) {
                     dispatch(ToDoActions.deleteTodoError(ex));
                 }
@@ -184,8 +186,9 @@ const selectItemsById = (items = []) => items.reduce((res, item) => ({
     [item.id]: item
 }), {});
 const selectItemsOrder = (items = []) => items.map(({ id }) => id);
+const selectOrder = ({ order }) => order;
 export const selectTodos = ({ todos }) => todos;
-export const selectItemsInternal = ({ items = [] }) => items;
+export const selectItemsInternal = ({ items = {} }) => items;
 export const selectItems = ({ items = {}, order = [] }) => order.map(id => items[id]);
 
 export const queryTodos = map(selectTodos);

@@ -19,15 +19,28 @@ export function className(str: string, ...args) {
     return res.join(' ');
 }
 
+function isArray(input) {
+    if (input instanceof Array || Object.prototype.toString.call(input) === '[object Array]') {
+        return true;
+    } else return false;
+}
+
 export function pick(obj, fn) {
     const keys = Object.keys(obj);
-    return keys.reduce((res, key) => {
+    return keys.reduce((res: any, key) => {
         if (fn(obj[key])) {
-            return {
-                ...res,
-                [key]: obj[key]
-            };
+            if (isArray(obj)) {
+                return [
+                    ...res,
+                    obj[key]
+                ];
+            } else {
+                return {
+                    ...res,
+                    [key]: obj[key]
+                };
+            }
         }
         return res;
-    }, {});
+    }, isArray(obj) ? [] : {});
 }

@@ -12,7 +12,6 @@ export const selectCompleteItems = (items = []) => pick(items, item => selectIte
 export const selectNewTodoTitle = ({ newTodoTitle = '' }) => newTodoTitle;
 export const selectToggleAllComplete = ({ toggleAllComplete }) => toggleAllComplete;
 
-
 export const [MainActions, MainActionTypes, mainReducer] = declareActions({
     UI_CREATE_TODO: {
         uiCreateTodo: (type, payload) => ({ type, payload })
@@ -109,7 +108,7 @@ export const main = () => {
         ),
         pipe(
             ofType(MainActionTypes.UI_CLEAR_COMPLETED),
-            withArg(pipe(onState, queryMain, queryItems, queryCompleteItems)),
+            withArg(pipe(onState, queryTodos, queryItems, queryCompleteItems)),
             map(([a, completeItems = []]) => completeItems.map(item => ToDoActions.deleteTodo(item.id)))
         )
     );
@@ -120,7 +119,7 @@ export const main = () => {
         ),
         pipe(
             merge(createItem, deleteItem),
-            map(() => [ToDoActions.fetchItems()])
+            map(() => ToDoActions.fetchItems())
         ),
         pipe(
             merge(changeItems, createItem, deleteItem),
