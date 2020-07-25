@@ -194,6 +194,9 @@ export const selectItems = ({ items = {}, order = [] }) => order.map(id => items
 export const queryTodos = map(selectTodos);
 export const queryItems = map(selectItems);
 
-export const changeItems = ofType(ToDoActionTypes.FETCH_TODOS_RESULT);
-export const createItem = ofType(ToDoActionTypes.CREATE_TODO_RESULT);
-export const deleteItem = ofType(ToDoActionTypes.DELETE_TODO_RESULT);
+export const whenChangeItems = ofType(ToDoActionTypes.FETCH_TODOS_RESULT);
+export const whenCreateItem = ofType(ToDoActionTypes.CREATE_TODO_RESULT);
+export const whenDeleteItem = ofType(ToDoActionTypes.DELETE_TODO_RESULT);
+
+export const whenCreateTodoResult = ofType(ToDoActionTypes.CREATE_TODO_RESULT);
+export const whenUpdateTodoResult = ofType(ToDoActionTypes.UPDATE_TODO_RESULT);

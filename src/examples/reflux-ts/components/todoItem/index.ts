@@ -1,6 +1,6 @@
 import { declareActions } from '../../declareActions';
 import { map, ofType, pipe, merge, filter, withArg, onAction, onState, onDispatch } from '../../itrx';
-import { ToDoActions, queryItems, queryTodos, ToDoActionTypes } from '../../models/todos';
+import { ToDoActions, queryItems, queryTodos, whenUpdateTodoResult } from '../../models/todos';
 
 
 export const selectCurrent = ({ current = {} }) => current;
@@ -52,11 +52,16 @@ export const queryTitle = map(selectTitle);
 export const queryComplete = map(selectComplete);
 export const queryId = map(selectId);
 
+const whenSetCurrentItem = ofType(ItemActionTypes.UI_SET_CURRENT_ITEM);
+const whenUpdateTodoTitle = ofType(ItemActionTypes.UI_UPDATE_TODO_TITLE);
+const whenSetComplete = ofType(ItemActionTypes.UI_SET_COMPLETE);
+const whenRemoveItem = ofType(ItemActionTypes.UI_REMOVE_ITEM);
+
 export const currentItem = () => {
 
     const fromView = merge(
         pipe(
-            ofType(ItemActionTypes.UI_SET_CURRENT_ITEM),
+            whenSetCurrentItem,
             withArg(pipe(onState, queryTodos, queryItems)),
             map(([{ payload: id }, items]: [any, any[]]) => {
                 const currentItem = items.find(item => item.id === id);
@@ -64,22 +69,22 @@ export const currentItem = () => {
             })
         ),
         pipe(
-            ofType(ItemActionTypes.UI_UPDATE_TODO_TITLE),
+            whenUpdateTodoTitle,
             withArg(pipe(onState, queryCurrent, queryId), pipe(onState, queryCurrent, queryTitle)),
             map(([a, itemId, editTitle]) => ToDoActions.updateTodo(itemId, { title: editTitle }))
         ),
         pipe(
-            ofType(ItemActionTypes.UI_SET_COMPLETE),
+            whenSetComplete,
             map(({ payload: { id, complete } }) => ToDoActions.updateTodo(id, { complete }))
         ),
         pipe(
-            ofType(ItemActionTypes.UI_REMOVE_ITEM),
+            whenRemoveItem,
             map(({ payload: id }) => ToDoActions.deleteTodo(id))
         )
     );
     const fromService = merge(
         pipe(
-            ofType(ToDoActionTypes.UPDATE_TODO_RESULT),
+            whenUpdateTodoResult,
             map(() => ToDoActions.fetchItems())
         )
     );

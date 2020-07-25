@@ -44,3 +44,13 @@ export function pick(obj, fn) {
         return res;
     }, isArray(obj) ? [] : {});
 }
+
+export function arrayMerge(array1, array2) {
+    const array = [].concat(array1);
+    for (let i = 0; i < array2.length; i++) {
+        if (array.indexOf(array2[i]) === -1) {
+            array.push(array2[i]);
+        }
+    }
+    return array;
+}

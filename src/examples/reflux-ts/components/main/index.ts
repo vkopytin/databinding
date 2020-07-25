@@ -1,6 +1,6 @@
 import { declareActions } from '../../declareActions';
 import { map, ofType, pipe, merge, filter, withArg, onAction, onState, onDispatch } from '../../itrx';
-import { ToDoActions, changeItems, queryItems, queryTodos, deleteItem, createItem, ToDoActionTypes } from '../../models/todos';
+import { ToDoActions, whenChangeItems, queryItems, queryTodos, whenDeleteItem, whenCreateItem, whenCreateTodoResult } from '../../models/todos';
 import { pick } from '../../utils';
 
 
@@ -70,6 +70,8 @@ const queryCompleteItems = map(selectCompleteItems);
 const whenUpdateNewTitle = ofType(MainActionTypes.UI_UPDATE_NEW_TITLE);
 const whenCreateTodo = ofType(MainActionTypes.UI_CREATE_TODO);
 const whenToggleAllComplete = ofType(MainActionTypes.UI_TOGGLE_ALL_COMPLETE);
+const whenSetActiveFilter = ofType(MainActionTypes.UI_SET_ACTIVE_FILTER);
+const whenClearCompleted = ofType(MainActionTypes.UI_CLEAR_COMPLETED);
 
 const API = {
     markAllItemsCompleted(items: Array<{ id; }>, complete = true) {
@@ -89,40 +91,43 @@ export const main = () => {
         )
     );
     const fromView = merge(
-        pipe(whenCreateTodo,
+        pipe(
+            whenCreateTodo,
             withArg(pipe(onState, queryMain, queryNewTodoTitle)),
             map(([a, newTodoTitle]) => ToDoActions.createTodo(newTodoTitle))
         ),
-        pipe(whenUpdateNewTitle,
+        pipe(
+            whenUpdateNewTitle,
             map(({ payload }) => MainActions.updateNewTodoTitle(payload))
         ),
-        pipe(whenToggleAllComplete,
+        pipe(
+            whenToggleAllComplete,
             withArg(pipe(onState, queryTodos, queryItems), pipe(onState, queryMain, queryToggleAllComplete)),
             map(([, items, isCompleted]) => API.markAllItemsCompleted(items, isCompleted)),
             map(completedItems => completedItems.map(item => ToDoActions.updateTodo(item.id, item)))
         ),
         pipe(
-            ofType(MainActionTypes.UI_SET_ACTIVE_FILTER),
+            whenSetActiveFilter,
             withArg(pipe(onState, queryTodos, queryItems)),
             map(([a, todos]) => MainActions.updateItems(todos))
         ),
         pipe(
-            ofType(MainActionTypes.UI_CLEAR_COMPLETED),
+            whenClearCompleted,
             withArg(pipe(onState, queryTodos, queryItems, queryCompleteItems)),
             map(([a, completeItems = []]) => completeItems.map(item => ToDoActions.deleteTodo(item.id)))
         )
     );
     const fromService = merge(
         pipe(
-            ofType(ToDoActionTypes.CREATE_TODO_RESULT),
+            whenCreateTodoResult,
             map(() => MainActions.updateNewTodoTitle(''))
         ),
         pipe(
-            merge(createItem, deleteItem),
+            merge(whenCreateItem, whenDeleteItem),
             map(() => ToDoActions.fetchItems())
         ),
         pipe(
-            merge(changeItems, createItem, deleteItem),
+            merge(whenChangeItems, whenCreateItem, whenDeleteItem),
             withArg(pipe(onState, queryTodos, queryItems)),
             map(([action, todos]) => {
                 return MainActions.updateItems(todos);

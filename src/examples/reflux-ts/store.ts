@@ -16,6 +16,8 @@ export default function compose(...funcs: Function[]) {
     return funcs.reduce((a, b) => (...args: any) => a(b(...args)))
 }
 
+// Shamelessly stolen from this place: https://github.com/reduxjs/redux/blob/master/src/applyMiddleware.ts
+// and slightly adjusted
 export function applyMiddleware(...middlewares) {
     return function (createStoreFn: typeof createStore) {
         return function (reducer, initialState) {

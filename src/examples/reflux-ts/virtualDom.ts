@@ -1,4 +1,5 @@
 import { dom } from './dom';
+import { arrayMerge } from './utils'; 
 
 
 export const EVENT_NAMES = {
@@ -25,16 +26,6 @@ export const propConverters = {
     }
 };
 
-function arrayMerge(array1, array2) {
-    const array = [].concat(array1);
-    for (let i = 0; i < array2.length; i++) {
-        if (array.indexOf(array2[i]) === -1) {
-            array.push(array2[i]);
-        }
-    }
-    return array;
-}
-
 export function el(type, attrs = {}, ...children) {
     children = [].concat(...children)
         .filter(a => [undefined, true, false].indexOf(a) === -1)
@@ -49,7 +40,9 @@ export function el(type, attrs = {}, ...children) {
         children
     };
 }
+
 export let currentStore = null;
+
 export function makeVdom(oldDom, store) {
     currentStore = store;
     function createElement(node) {

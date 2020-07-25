@@ -44,6 +44,8 @@ function mapDispatchToProps(dispatch, props) {
     };
 }
 
+// this part should be extracted into the separate file
+// It has kept here just to make easy understand the implementation
 function setCaretAtStartEnd(node, atEnd) {
     const sel = document.getSelection();
     node = node.firstChild;

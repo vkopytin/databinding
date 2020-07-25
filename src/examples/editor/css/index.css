@@ -1,13 +1,37 @@
 @import './custom.css';
 
 .html-editor {
-    width: 100%;
+    width: 96%;
     height: 100vh;
 }
 .save {
     position: fixed;
 }
 
+.region {
+    height: 100vh;
+    white-space: initial;
+}
+
+.editor-placeholder {
+    overflow: auto;
+}
+
 .wysiwyg-editor {
-    padding: 10px;
+    margin: 10px;
+    width: 96%;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+  
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
 }

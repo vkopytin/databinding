@@ -63,19 +63,23 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
             </button>
             <button className={cn('clear-completed btn pull-right ?hidden', props.showClearCompleted)}
                 onClick={e => props.uiClearCompleted()}
-            >Clear completed</button>
+                >Clear completed</button>
+            <hr/>
             <div className="filters segmented-control">
                 <a className={cn("control-item ?active", !props.activeFilter)} href="#/"
                     onClick={evnt => props.uiSetActiveFilter('all')}
-                >All</a>
+                    >All</a>
+                    &nbsp;•&nbsp;
                 <a className={cn("control-item ?active", props.activeFilter === 'active')} href="#/active"
                     onClick={evnt => props.uiSetActiveFilter('active')}
-                >Active</a>
+                    >Active</a>
+                    &nbsp;•&nbsp;
                 <a className={cn("control-item ?active", props.activeFilter === 'completed')} href="#/completed"
                     onClick={evnt => props.uiSetActiveFilter('complete')}    
-                >Completed</a>
+                    >Completed</a>
             </div>
         </header>
+        <hr/>
         <section className="bar bar-standard bar-header-secondary">
             <form onSubmit={e => e.preventDefault()}>
                 <input className="new-todo" type="search" placeholder="What needs to be done?"
@@ -85,6 +89,7 @@ export const MainView = connect(mapStateToProps, mapDispatchToProps)(({ dispatch
                 />
             </form>
         </section>
+        <hr/>
         <footer className={cn('footer bar bar-standard bar-footer ?hidden', props.hasTodos)}>
             <span className="todo-count title">
                 <strong>{props.activeItems ? props.activeItems.length : 0}</strong>&nbsp;

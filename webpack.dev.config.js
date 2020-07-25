@@ -18,7 +18,7 @@ module.exports = {
         aliasFields: [ 'browser' ],
         alias: {
             // databindjs: path.resolve(__dirname, 'lib/index')
-            databindjs: path.resolve(__dirname, '../src/databindjs/')
+            databindjs: path.resolve(__dirname, 'src/databindjs/')
         }
     },
     module: {

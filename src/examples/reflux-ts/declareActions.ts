@@ -6,6 +6,7 @@ export function createReducer (initialState) {
     }
 };
 
+// UnionToIntersection was borrowed from https://stackoverflow.com/questions/50374908/transform-union-type-to-intersection-type
 type UnionToIntersection<U> = (U extends any
     ? (k: U) => void
     : any) extends ((k: infer I) => void)
