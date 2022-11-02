@@ -1,5 +1,5 @@
 # databindjs
-Databinding in javascript
+Researching databinding in javascript
 
 This is my personal research project. To check that databinding is achiavable in javascript. And try to see what impact it would take on projects if used.
 
