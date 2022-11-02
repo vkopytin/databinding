@@ -1,6 +1,8 @@
 # databindjs
 Databinding in javascript
 
+This is my personal research project. To check that databinding is achiavable in javascript. And try to see what impact it would take on projects if used.
+
 `$yarn add databindjs` or `$npm install databindjs`
 
 How it is expected to integrate (Example: https://jsfiddle.net/rsjpa0o8/5/)
@@ -58,7 +60,7 @@ This is pure JS solution to implement databinding for javascript application.
 To build solution run `yarn watch`. It would build `lib/index.html` and `lib/main.js`   
 To start dev server run `yarn dev`. It would run local server on https://localhost:8080/index.html by default.    
 
-The goal is to build fully working databinding solution that is compatible to use for javascript and another frameworks (if possible)
+The goal is to get at least workable databinding solution. Ideally compatible to use for javascript and another frameworks (if possible)
 
 Tasks that databind should perform (toDO):
 1. [x] Monitor changes and transfer value from source to target and vice versa (two way databinding);
